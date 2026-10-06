@@ -1,0 +1,204 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 840 704" width="100%" class="cmf-fig" role="img" aria-labelledby="parameters-flow-t parameters-flow-d" data-search-exclude="">
+<title id="parameters-flow-t">From CaMa map files to GPU tensors</title>
+<desc id="parameters-flow-d">The parameter file is built once per map from CaMa map files, then loaded at the start of each run: fields are filtered by the opened modules, split into topology, parameters, initial state, forcing and derived fields, and whole basins are partitioned across GPUs. A checkpoint stores topology, parameters and the current state.</desc>
+<style>
+svg.cmf-fig{--f-paper:var(--fig-paper,#ffffff);--f-panel:var(--fig-panel,#f7f7f8);--f-ink:var(--fig-ink,#0d0d0d);--f-ink2:var(--fig-ink-2,#555561);--f-ink3:var(--fig-ink-3,#6e6e7a);--f-rule:var(--fig-rule,#e3e3e8);--f-blue:var(--fig-blue,#1859c9);--f-bsoft:var(--fig-blue-soft,#e7eefb);--f-orange:var(--fig-orange,#b54a0c);--f-green:var(--fig-green,#0a7a5c);--f-plum:var(--fig-plum,#a12f6e);font-family:Inter, system-ui, -apple-system, 'Segoe UI', sans-serif}
+@media (prefers-color-scheme:dark){svg.cmf-fig:root{--fig-paper:#0e0e10;--fig-panel:#17171a;--fig-ink:#ececf1;--fig-ink-2:#acacb8;--fig-ink-3:#8a8a96;--fig-rule:#2a2a30;--fig-blue:#6ea6ff;--fig-blue-soft:#15233a;--fig-orange:#f08a4b;--fig-green:#3ec79a;--fig-plum:#e07ab2}}
+svg.cmf-fig text{fill:var(--f-ink);font-size:12px}
+svg.cmf-fig .bg{fill:var(--fig-bg,var(--f-paper))}
+svg.cmf-fig .k{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px;font-weight:500;letter-spacing:.08em;fill:var(--f-blue)}
+svg.cmf-fig .h{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:21px;font-weight:400;letter-spacing:-.01em}
+svg.cmf-fig .sub{font-size:12.5px;fill:var(--f-ink2)}
+svg.cmf-fig .cap{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10px;letter-spacing:.1em;fill:var(--f-ink2)}
+svg.cmf-fig .se{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:15px}
+svg.cmf-fig .it{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-style:italic}
+svg.cmf-fig .m{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px}
+svg.cmf-fig .sm{font-size:11px}
+svg.cmf-fig .b6{font-weight:600}
+svg.cmf-fig .c2{fill:var(--f-ink2)}
+svg.cmf-fig .c3{fill:var(--f-ink3)}
+svg.cmf-fig .cb{fill:var(--f-blue)}
+svg.cmf-fig .co{fill:var(--f-orange)}
+svg.cmf-fig .mid{text-anchor:middle}
+svg.cmf-fig .end{text-anchor:end}
+svg.cmf-fig .ln{fill:none;stroke:var(--f-ink);stroke-width:1}
+svg.cmf-fig .ln2{fill:none;stroke:var(--f-ink2);stroke-width:1}
+svg.cmf-fig .ln3{fill:none;stroke:var(--f-ink3);stroke-width:1}
+svg.cmf-fig .rl{fill:none;stroke:var(--f-rule);stroke-width:1}
+svg.cmf-fig .lb{fill:none;stroke:var(--f-blue);stroke-width:1.5}
+svg.cmf-fig .lo{fill:none;stroke:var(--f-orange);stroke-width:1.5}
+svg.cmf-fig .dash{stroke-dasharray:3 4}
+svg.cmf-fig .fp{fill:var(--f-paper)}
+svg.cmf-fig .fpn{fill:var(--f-panel)}
+svg.cmf-fig .fi{fill:var(--f-ink)}
+svg.cmf-fig .fi2{fill:var(--f-ink2)}
+svg.cmf-fig .fi3{fill:var(--f-ink3)}
+svg.cmf-fig .fb{fill:var(--f-blue)}
+svg.cmf-fig .fbs{fill:var(--f-bsoft)}
+svg.cmf-fig .fo{fill:var(--f-orange)}
+svg.cmf-fig .c-0{fill:var(--f-blue)}
+svg.cmf-fig .c-1{fill:var(--f-orange)}
+svg.cmf-fig .c-2{fill:var(--f-green)}
+svg.cmf-fig .c-3{fill:var(--f-plum)}
+svg.cmf-fig .s-0{fill:none;stroke:var(--f-blue)}
+svg.cmf-fig .s-1{fill:none;stroke:var(--f-orange)}
+svg.cmf-fig .s-2{fill:none;stroke:var(--f-green)}
+svg.cmf-fig .s-3{fill:none;stroke:var(--f-plum)}
+</style>
+<rect x="-20" y="-20" width="840" height="704" class="bg"/>
+<text x="0" y="12" class="k">FIG. 01</text>
+<text x="0" y="38" class="h">From CaMa map files to GPU tensors</text>
+<text x="0" y="58" class="sub">Built once per map, loaded at the start of every run</text>
+<text x="0" y="98" class="cap">BUILD · ONCE PER MAP</text>
+<line x1="150" y1="94.5" x2="800" y2="94.5" class="rl"/>
+<text x="0" y="128" class="se">CaMa map files</text>
+<rect x="0" y="140" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="28" y="154" class="m mid">nextxy</text>
+<rect x="62" y="140" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="90" y="154" class="m mid">rivlen</text>
+<rect x="124" y="140" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="152" y="154" class="m mid">rivwth</text>
+<rect x="186" y="140" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="214" y="154" class="m mid">rivhgt</text>
+<rect x="0" y="166" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="28" y="180" class="m mid">elevtn</text>
+<rect x="62" y="166" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="90" y="180" class="m mid">ctmare</text>
+<rect x="124" y="166" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="152" y="180" class="m mid">nxtdst</text>
+<rect x="186" y="166" width="56" height="20" rx="3" class="rl fpn"/>
+<text x="214" y="180" class="m mid">fldhgt</text>
+<text x="0" y="208" class="cap">+ OPTIONAL</text>
+<text x="0" y="226" class="m">bifori.txt</text>
+<text x="112" y="226" class="sm c2">bifurcations</text>
+<text x="0" y="242" class="m">levhgt, levfrc</text>
+<text x="112" y="242" class="sm c2">levees</text>
+<text x="0" y="258" class="m">dam CSV</text>
+<text x="112" y="258" class="sm c2">reservoirs</text>
+<text x="0" y="274" class="m">GRDC_alloc.txt</text>
+<text x="112" y="274" class="sm c2">gauges</text>
+<path d="M258,190 L278.00,190.00" class="ln"/><path d="M284,190 L278.00,187.48 L278.00,192.52 Z" class="fi"/>
+<rect x="290" y="116" width="226" height="170" rx="6" class="ln fpn"/>
+<text x="306" y="140" class="m b6">make_map_params.py</text>
+<text x="306" y="156" class="m c3">MERITMap(…).build_input()</text>
+<line x1="306" y1="168" x2="500" y2="168" class="rl"/>
+<rect x="306" y="185.5" width="4" height="4" class="fi3"/>
+<text x="318" y="190" class="sm c2">topological order</text>
+<rect x="306" y="204.5" width="4" height="4" class="fi3"/>
+<text x="318" y="209" class="sm c2">basins, largest first</text>
+<rect x="306" y="223.5" width="4" height="4" class="fi3"/>
+<text x="318" y="228" class="sm c2">merge basins linked by channels</text>
+<rect x="306" y="242.5" width="4" height="4" class="fi3"/>
+<text x="318" y="247" class="sm c2">initial depth and storage</text>
+<rect x="306" y="261.5" width="4" height="4" class="fi3"/>
+<text x="318" y="266" class="sm c2">atomic NetCDF write</text>
+<path d="M522,190 L542.00,190.00" class="ln"/><path d="M548,190 L542.00,187.48 L542.00,192.52 Z" class="fi"/>
+<path d="M556,116 H784 L800,132 V286 H556 Z" class="ln fp"/><path d="M784,116 V132 H800" class="ln"/>
+<text x="572" y="140" class="m b6">parameters.nc</text>
+<text x="572" y="156" class="sm c3">one NetCDF file per map</text>
+<line x1="572" y1="168" x2="784" y2="168" class="rl"/>
+<rect x="572" y="182" width="8" height="8" class="fb"/>
+<text x="588" y="190" class="sm">base</text>
+<text x="784" y="190" class="m c3 end">network, geometry, state</text>
+<rect x="572" y="201" width="8" height="8" class="fb"/>
+<text x="588" y="209" class="sm">bifurcation</text>
+<text x="784" y="209" class="m c3 end">channels</text>
+<rect x="572" y="220" width="8" height="8" class="fb"/>
+<text x="588" y="228" class="sm">levee</text>
+<text x="784" y="228" class="m c3 end">optional</text>
+<rect x="572" y="239" width="8" height="8" class="fb"/>
+<text x="588" y="247" class="sm">reservoir</text>
+<text x="784" y="247" class="m c3 end">optional</text>
+<rect x="572" y="258" width="8" height="8" class="ln3 fp"/>
+<text x="588" y="266" class="sm c3">map metadata</text>
+<text x="784" y="266" class="m c3 end">reference only</text>
+<path d="M566,326 L566.00,295.00" class="ln3"/><path d="M566,290 L563.90,295.00 L568.10,295.00 Z" class="fi3"/>
+<text x="578" y="304" class="m c2">update_river_params.py</text>
+<text x="578" y="318" class="m c2">update_dam_params.py</text>
+<text x="578" y="333" class="sm c3">rewrite geometry or add dams</text>
+<text x="0" y="368" class="cap">LOAD · EVERY RUN</text>
+<line x1="122" y1="364.5" x2="800" y2="364.5" class="rl"/>
+<path d="M0,390 H25 L34,399 V434 H0 Z" class="ln fp"/><path d="M25,390 V399 H34" class="ln"/>
+<text x="46" y="408" class="m">parameters.nc</text>
+<text x="46" y="424" class="sm c3">or a checkpoint</text>
+<path d="M17,440 L17.00,454.00" class="ln"/><path d="M17,460 L19.52,454.00 L14.48,454.00 Z" class="fi"/>
+<rect x="0" y="466" width="152" height="44" rx="4" class="ln fpn"/>
+<text x="12" y="486" class="m b6">InputProxy.from_nc()</text>
+<text x="12" y="501" class="sm c2">reads the file</text>
+<path d="M17,510 L17.00,524.00" class="ln"/><path d="M17,530 L19.52,524.00 L14.48,524.00 Z" class="fi"/>
+<rect x="0" y="536" width="152" height="62" rx="4" class="ln fp"/>
+<path d="M130,546 h14 l-5,6 v6 l-4,2 v-8 Z" class="ln2"/>
+<text x="12" y="556" class="m b6">opened_modules</text>
+<text x="12" y="573" class="sm c2">keep their fields;</text>
+<text x="12" y="588" class="sm c3">map metadata dropped</text>
+<rect x="186" y="390" width="264" height="42" rx="3" class="rl fpn"/>
+<rect x="186" y="390" width="3" height="42" class="fb"/>
+<text x="200" y="407" class="sm b6">Topology</text>
+<text x="200" y="423" class="sm c2">ids, downstream links, basins</text>
+<text x="440" y="407" class="m c3 end">from file</text>
+<rect x="186" y="440" width="264" height="42" rx="3" class="rl fpn"/>
+<rect x="186" y="440" width="3" height="42" class="fb"/>
+<text x="200" y="457" class="sm b6">Parameters</text>
+<text x="200" y="473" class="sm c2">geometry, tables, levee, dam</text>
+<text x="440" y="457" class="m c3 end">from file</text>
+<rect x="186" y="490" width="264" height="42" rx="3" class="rl fpn"/>
+<rect x="186" y="490" width="3" height="42" class="fb"/>
+<text x="200" y="507" class="sm b6">Initial state</text>
+<text x="200" y="523" class="sm c2">storage, depth, outflow</text>
+<text x="440" y="507" class="m c3 end">from file</text>
+<rect x="186" y="540" width="264" height="42" rx="3" class="rl fp"/>
+<line x1="187.5" y1="540" x2="187.5" y2="582" class="ln3 dash"/>
+<text x="200" y="557" class="sm b6">Forcing</text>
+<text x="200" y="573" class="sm c2">runoff, via set_inputs()</text>
+<text x="440" y="557" class="m c3 end">each step</text>
+<rect x="186" y="590" width="264" height="42" rx="3" class="rl fp"/>
+<line x1="187.5" y1="590" x2="187.5" y2="632" class="ln3 dash"/>
+<text x="200" y="607" class="sm b6">Derived</text>
+<text x="200" y="623" class="sm c2">index arrays, total_outflow …</text>
+<text x="440" y="607" class="m c3 end">on the GPU</text>
+<path d="M152,567 L168,567 L168,511 L174.00,511.00" class="ln"/><path d="M180,511 L174.00,508.48 L174.00,513.52 Z" class="fi"/>
+<path d="M454,511 L476.00,511.00" class="ln"/><path d="M482,511 L476.00,508.48 L476.00,513.52 Z" class="fi"/>
+<text x="488" y="406" class="sm b6">Whole basins → GPUs</text>
+<text x="488" y="422" class="sm c2">largest first, each to the</text>
+<text x="488" y="437" class="sm c2">least-loaded GPU</text>
+<rect x="488" y="456" width="124" height="52" rx="6" class="ln fp"/>
+<text x="498" y="473" class="m cb">GPU 0</text>
+<rect x="498" y="482" width="58.2105" height="16" rx="1.5" class="fbs"/>
+<line x1="498" y1="482" x2="556.211" y2="482" class="lb"/>
+<rect x="558.211" y="482" width="25.3684" height="16" rx="1.5" class="fbs"/>
+<line x1="558.211" y1="482" x2="583.579" y2="482" class="lb"/>
+<rect x="585.579" y="482" width="8.94737" height="16" rx="1.5" class="fbs"/>
+<line x1="585.579" y1="482" x2="594.526" y2="482" class="lb"/>
+<rect x="596.526" y="482" width="3.47368" height="16" rx="1.5" class="fbs"/>
+<line x1="596.526" y1="482" x2="600" y2="482" class="lb"/>
+<rect x="488" y="520" width="124" height="52" rx="6" class="ln fp"/>
+<text x="498" y="537" class="m cb">GPU 1</text>
+<rect x="498" y="546" width="44.5263" height="16" rx="1.5" class="fbs"/>
+<line x1="498" y1="546" x2="542.526" y2="546" class="lb"/>
+<rect x="544.526" y="546" width="33.5789" height="16" rx="1.5" class="fbs"/>
+<line x1="544.526" y1="546" x2="578.105" y2="546" class="lb"/>
+<rect x="580.105" y="546" width="17.1579" height="16" rx="1.5" class="fbs"/>
+<line x1="580.105" y1="546" x2="597.263" y2="546" class="lb"/>
+<text x="488" y="596" class="sm c3">bifurcation, levee and dam</text>
+<text x="488" y="611" class="sm c3">rows follow their catchment</text>
+<path d="M614,482 H620 V546 H614" class="ln"/>
+<path d="M620,514 L690.00,514.00" class="ln dash"/><path d="M696,514 L690.00,511.48 L690.00,516.52 Z" class="fi"/>
+<text x="626" y="506" class="m" font-size="9.5">save_state()</text>
+<path d="M702,452 H788 L800,464 V580 H702 Z" class="ln fp"/><path d="M788,452 V464 H800" class="ln"/>
+<text x="712" y="474" class="m b6">model_state</text>
+<text x="712" y="488" class="m b6">_…nc</text>
+<line x1="712" y1="498" x2="790" y2="498" class="rl"/>
+<rect x="712" y="510.5" width="3" height="9" class="fb"/>
+<text x="722" y="518" class="sm">topology</text>
+<rect x="712" y="526.5" width="3" height="9" class="fb"/>
+<text x="722" y="534" class="sm">parameters</text>
+<rect x="712" y="542.5" width="3" height="9" class="fb"/>
+<text x="722" y="550" class="sm">current state</text>
+<line x1="0" y1="638" x2="800" y2="638" class="rl"/>
+<rect x="0" y="649" width="3" height="12" class="fb"/>
+<text x="12" y="658" class="sm c2">read from the file, saved in a checkpoint</text>
+<line x1="290" y1="649" x2="290" y2="661" class="ln3 dash"/>
+<text x="300" y="658" class="sm c2">not in the file, not saved</text>
+<rect x="476" y="650" width="8" height="8" class="ln3 fp"/>
+<text x="492" y="658" class="sm c2">kept for reference, ignored when loading</text>
+</svg>

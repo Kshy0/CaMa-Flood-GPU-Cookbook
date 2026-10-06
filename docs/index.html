@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaMa-Flood-GPU</title>
+<meta name="description" content="CaMa-Flood-GPU runs the CaMa-Flood global river and floodplain model on NVIDIA, AMD and Apple GPUs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Math&display=swap">
+<link rel="stylesheet" href="home/home.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="./"><img src="assets/logo.svg" alt="">CaMa-Flood-GPU</a>
+  <nav aria-label="Site">
+    <a href="overview/">Cookbook</a>
+    <a href="quickstart/">Quick start</a>
+    <a href="#benchmark">Benchmark</a>
+    <a href="https://gmd.copernicus.org/articles/19/5623/2026/">Paper</a>
+    <a class="gh" href="https://github.com/Kshy0/CaMa-Flood-GPU">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero" aria-labelledby="title">
+  <dl class="meta">
+    <div><dt>Model</dt><dd>CaMa-Flood v4, re-implemented for GPUs</dd></div>
+    <div><dt>Framework</dt><dd><a href="https://github.com/Kshy0/hydroforge">HydroForge</a> on PyTorch</dd></div>
+    <div><dt>Backends</dt><dd>Triton · CUDA · Metal</dd></div>
+    <div><dt>GPUs</dt><dd>NVIDIA · AMD · Apple</dd></div>
+    <div><dt>License</dt><dd>Apache-2.0</dd></div>
+    <div><dt>Paper</dt><dd><a href="https://doi.org/10.5194/gmd-19-5623-2026">Kang et al. (2026)</a></dd></div>
+  </dl>
+  <h1 id="title" class="giant">CaMa-Flood-GPU</h1>
+  <figure class="map">
+    <div class="map-stage">
+      <canvas id="map" role="img" aria-label="The world's rivers coloured by simulated daily discharge through one year."></canvas>
+      <div class="hero-row">
+        <div class="intro">
+          <p class="tagline">Every river on Earth, <em>on the GPU.</em></p>
+          <p><a href="https://global-hydrodynamics.github.io/CaMa-Flood/">CaMa-Flood</a>, the Catchment-based Macro-scale Floodplain model, simulates the hydrodynamics of continental-scale rivers. It divides the world's river networks into unit-catchments, diagnoses the water level and flooded area of each from its water storage and the sub-grid topography of its river channel and floodplain, and computes discharge with the local inertial equation along the river network. CaMa-Flood-GPU runs the same physics on GPUs, from a workstation to a multi-GPU node: a global year at kilometre scale takes hours instead of days.</p>
+          <p class="cta"><a class="btn btn-fill" href="overview/">Read the cookbook <span aria-hidden="true">→</span></a><a class="btn" href="quickstart/">Quick start</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="map-bar">
+      <button class="play" type="button" aria-label="Pause"><svg viewBox="0 0 16 16" aria-hidden="true"><rect class="i-pause" x="4" y="3" width="2.6" height="10" rx="1"/><rect class="i-pause" x="9.4" y="3" width="2.6" height="10" rx="1"/><path class="i-play" d="M5 3.2v9.6c0 .6.6.9 1.1.6l7-4.8c.4-.3.4-.9 0-1.2l-7-4.8C5.6 2.3 5 2.6 5 3.2z"/></svg></button>
+      <p class="when"><b data-r="date">–</b><span data-r="year"></span></p>
+      <div class="scrub" role="slider" tabindex="0" aria-label="Day of the year"><canvas id="spark"></canvas><i class="knob"></i></div>
+      <div class="legend"><i class="ramp"></i><span data-r="legend"></span></div>
+    </div>
+    <figcaption data-r="caption"></figcaption>
+  </figure>
+</section>
+
+<section class="chapter" id="runoff" aria-labelledby="h-runoff">
+  <header class="chapter-head"><p class="no">01</p><h2 id="h-runoff">From rain to runoff</h2><p>What CaMa-Flood starts from.</p></header>
+  <div class="scrolly">
+    <div class="stage">
+      <div class="fig" data-fig="lsm">
+        <div class="fig-head"><b>A land surface model splits the rain</b><span>one grid cell, seen from the side</span></div>
+        <div class="fig-body"><svg role="img" aria-label="Precipitation over a land column: evaporation goes up, infiltration fills the soil, surface runoff flows off the top and subsurface runoff drains from the bottom."></svg></div>
+      </div>
+      <div class="fig" data-fig="grid">
+        <div class="fig-head"><b>Runoff on a regular grid</b><span>a rate per cell, mm per day</span></div>
+        <div class="fig-body"><svg role="img" aria-label="The cell seen from the side becomes one cell of a runoff grid, which zooms out to the whole world: the annual mean runoff of 2000 from eartH2Observe WRR2."></svg></div>
+      </div>
+    </div>
+    <div class="steps">
+      <article class="step" data-fig="lsm">
+        <h3>Rain meets the land</h3>
+        <p>A land surface model (such as MATSIRO, VIC, JULES, or HTESSEL in ERA5-Land) takes the precipitation on each grid cell and splits it. Some evaporates or is transpired by plants, some soaks into the soil, and the rest leaves the land: as surface runoff when the ground cannot take more, and as subsurface runoff draining out of the soil into the streams.</p>
+      </article>
+      <article class="step" data-fig="grid">
+        <h3>Runoff on a grid</h3>
+        <p>The column we followed is one cell of a regular grid that covers all land on Earth. For every cell the model reports a runoff rate, typically daily or hourly; the runs on this page use the daily 0.25° runoff of the eartH2Observe WRR2 reanalysis from ECMWF's HTESSEL. This runoff is CaMa-Flood's input: from here on, the model moves the water the land has released.</p>
+        <a class="more" href="inputs/datasets/">Runoff datasets →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="cama" aria-labelledby="h-cama">
+  <header class="chapter-head"><p class="no">02</p><h2 id="h-cama">How CaMa-Flood works</h2><p>Catchments, a sparse map and a river network.</p></header>
+  <div class="scrolly">
+    <div class="stage">
+      <div class="fig" data-fig="catch">
+        <div class="fig-head"><b>Unit catchments on high-resolution pixels</b><span>irregular catchments over the runoff grid</span></div>
+        <div class="fig-body fig-split">
+          <svg role="img" aria-label="Catchment outlines over the runoff grid; one catchment is highlighted and its pixels are counted one by one."></svg>
+          <div class="note">
+            <p class="note-k">One high-resolution pixel</p>
+            <p class="note-i">its area is added to</p>
+            <p class="note-w">W[<span class="o">catchment</span>, <span class="b">cell</span>]</p>
+            <p class="note-m" data-r="wnow">&nbsp;</p>
+            <p class="note-l"><i class="sw-o"></i>catchment <i class="sw-c"></i>runoff cell</p>
+          </div>
+        </div>
+      </div>
+      <div class="fig" data-fig="matrix">
+        <div class="fig-head"><b>The sparse overlap matrix W</b><span>rows = catchments, columns = cells</span></div>
+        <div class="fig-body"><svg role="img" aria-label="The weight matrix W; only the few non-zero overlaps are stored."></svg></div>
+        <p class="fig-foot"><i class="sw-sq"></i>stored <i class="sw-dot"></i>not stored</p>
+      </div>
+      <div class="fig" data-fig="physics">
+        <div class="fig-head"><b>Storage and flow in unit catchments</b><span>after Yamazaki et al. (2011), with the real catchments and parameters of glb_15min</span></div>
+        <div class="fig-body"><svg role="img" aria-label="Unit catchments along a river in plan view, the cross-section of one with its river channel and its floodplain drawn from the flood table, filling and flooding through one simulated year."></svg></div>
+        <div class="fig-foot eq">
+          <math display="block"><mfrac><mrow><mi>d</mi><msub><mi>S</mi><mi>i</mi></msub></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac><mo>=</mo><munder><mo>&#x2211;</mo><mrow><mi>u</mi><mo>&#x2192;</mo><mi>i</mi></mrow></munder><msub><mi>Q</mi><mi>u</mi></msub><mo>&#x2212;</mo><msub><mi>Q</mi><mi>i</mi></msub><mo>+</mo><msub><mi>R</mi><mi>i</mi></msub></math>
+          <math display="block"><msubsup><mi>Q</mi><mi>i</mi><mrow><mi>t</mi><mo>+</mo><mi>&#x394;</mi><mi>t</mi></mrow></msubsup><mo>=</mo><mfrac><mrow><msubsup><mi>Q</mi><mi>i</mi><mi>t</mi></msubsup><mo>&#x2212;</mo><mi>g</mi><msub><mi>A</mi><mi>i</mi></msub><mi>&#x394;</mi><mi>t</mi><mspace width="0.1em"/><mo stretchy="false">(</mo><msub><mi>&#x3B7;</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>&#x2212;</mo><msub><mi>&#x3B7;</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>/</mo><msub><mi>L</mi><mi>i</mi></msub></mrow><mrow><mn>1</mn><mo>+</mo><mi>g</mi><msup><mi>n</mi><mn>2</mn></msup><mi>&#x394;</mi><mi>t</mi><mspace width="0.1em"/><mrow><mo>|</mo><msubsup><mi>Q</mi><mi>i</mi><mi>t</mi></msubsup><mo>|</mo></mrow><mo>/</mo><mo stretchy="false">(</mo><msub><mi>W</mi><mi>i</mi></msub><msubsup><mi>h</mi><mi>i</mi><mrow><mn>7</mn><mo>/</mo><mn>3</mn></mrow></msubsup><mo stretchy="false">)</mo></mrow></mfrac></math>
+          <p class="eq-key">S storage · Q discharge · R runoff · η water surface elevation · h flow depth · W channel width · A = W h · n Manning roughness · L distance to the next outlet</p>
+        </div>
+      </div>
+      <div class="fig" data-fig="cfl">
+        <div class="fig-head"><b>The CFL condition</b><span>the time step follows the fastest wave</span></div>
+        <div class="fig-body"><svg role="img" aria-label="A flood wave moves downstream a fixed fraction of a catchment length per time step; below, the Lena's discharge and the time step its depth allows through the 2000 flood."></svg></div>
+        <div class="fig-foot eq">
+          <math display="block"><mi>&#x394;</mi><mi>t</mi><mo>=</mo><munder><mo movablelimits="false">min</mo><mi>i</mi></munder><mfrac><mrow><mi>&#x3B1;</mi><msub><mi>L</mi><mi>i</mi></msub></mrow><msqrt><mi>g</mi><msub><mi>h</mi><mi>i</mi></msub></msqrt></mfrac><mo>,</mo><mspace width="0.6em"/><mi>&#x3B1;</mi><mo>=</mo><mn>0.7</mn></math>
+        </div>
+      </div>
+      <div class="fig" data-fig="network">
+        <div class="fig-head"><b>The river network</b><span>every catchment drains to one downstream catchment</span></div>
+        <div class="fig-body"><svg role="img" aria-label="The world's river network; the main stems of eighteen great rivers are traced from source to sea."></svg></div>
+      </div>
+    </div>
+    <div class="steps">
+      <article class="step" data-fig="catch">
+        <h3>Unit catchments</h3>
+        <p>Seen from closer, the cell is covered by parts of several unit catchments. CaMa-Flood traces them on high-resolution hydrography (<a href="https://doi.org/10.1029/2019WR024873">MERIT Hydro</a>; Yamazaki et al., 2019). Each catchment holds one river reach with its floodplain and drains into exactly one downstream catchment.</p>
+        <a class="more" href="inputs/model-input/">River network and parameters →</a>
+      </article>
+      <article class="step" data-fig="matrix">
+        <h3>Runoff mapping</h3>
+        <p>Grid cells and catchments do not line up. The area of every fine pixel is added to a weight matrix W[catchment, cell]; W is almost all zeros, so only its non-zero overlaps are stored. The orange catchment, for example, collects the runoff of the few cells it overlaps, each weighted by its share of pixels. Multiplying by W does this for every catchment at once.</p>
+        <a class="more" href="inputs/runoff-mapping/">Runoff mapping →</a>
+      </article>
+      <article class="step" data-fig="physics">
+        <h3>Storage and flow</h3>
+        <p>Water storage is the one quantity the model carries forward: each unit catchment gains runoff and the discharge of its upstream catchments, and loses its own discharge downstream. The sub-grid topography turns storage into a water level. Below the bank the river channel fills; above it, the flood table, which lists how high the water stands when 10%, 20%, … of the catchment is flooded, gives the flood depth and flooded area. The discharge to the next catchment follows the local inertial equation (Yamazaki et al., 2013), driven by the drop of the water surface between the two outlets. The two levels steer each other: discharge lowers the upstream level and raises the downstream one, which flattens the drop and slows the flow; when the downstream catchment fills from elsewhere, the drop shrinks and water backs up, even into reverse flow.</p>
+        <a class="more" href="#references">Yamazaki et al. (2011, 2013) →</a>
+      </article>
+      <article class="step" data-fig="cfl">
+        <h3>The CFL condition</h3>
+        <p>A disturbance on the water surface travels at about √(gh), faster in deeper water. For the equations to stay stable, a wave may cross only part of a catchment in one time step: Δt ≤ αL/√(gh), the Courant–Friedrichs–Lewy (CFL) condition. As a flood deepens the rivers, the time step shrinks, and it grows again as the water falls.</p>
+        <a class="more" href="run/time-axis/">The time axis →</a>
+      </article>
+      <article class="step" data-fig="network">
+        <h3>The river network</h3>
+        <p>Catchment by catchment, water travels down to the sea, from the Amazon and the Congo to the Lena and the Mekong. Optional modules add bifurcation channels in deltas, levees and dam reservoirs.</p>
+        <a class="more" href="reference/variables/">Modules and variables →</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" id="gpu" aria-labelledby="h-gpu">
+  <header class="chapter-head"><p class="no">03</p><h2 id="h-gpu">On the GPU</h2><p>The same physics, laid out for thousands of threads.</p></header>
+  <div class="scrolly">
+    <div class="stage">
+      <div class="fig" data-fig="io">
+        <div class="fig-head"><b>Reading and writing while the GPU computes</b><span>asynchronous input and output</span></div>
+        <div class="fig-body"><svg role="img" aria-label="Loader processes read the next days of runoff while the GPU simulates the current day, and writer processes save finished days; a timeline shows the GPU busy without gaps."></svg></div>
+      </div>
+      <div class="fig" data-fig="scatter">
+        <div class="fig-head"><b>Every catchment at once</b><span>one thread per catchment, atomic adds downstream</span></div>
+        <div class="fig-body"><svg role="img" aria-label="Catchments in topological order; each computes its discharge in parallel and adds it into its downstream catchment, with atomic adds where rivers join."></svg></div>
+      </div>
+      <div class="fig" data-fig="stats">
+        <div class="fig-head"><b>Statistics windows on the GPU</b><span>only finished windows leave</span></div>
+        <div class="fig-body"><svg role="img" aria-label="Daily mean discharge fills a year-long hydrograph; each month's maximum of the daily means is kept on the GPU and written when the month closes."></svg></div>
+      </div>
+      <div class="fig" data-fig="gpus">
+        <div class="fig-head"><b>Whole basins per GPU</b><span>a 4-GPU partition, largest basins first</span></div>
+        <div class="fig-body"><svg role="img" aria-label="The river network coloured by the GPU that simulates each basin."></svg></div>
+        <div class="fig-foot gpus"></div>
+      </div>
+    </div>
+    <div class="steps">
+      <article class="step" data-fig="io">
+        <h3>The GPU never waits for the disk</h3>
+        <p>Two loader processes read the coming days of runoff while the GPU simulates the current one, and the data reach the GPU in the background. There a single sparse matrix product maps all runoff cells to catchments. Finished results go to two writer processes that compress them and append them to NetCDF, handed over through shared memory by <a href="https://github.com/Kshy0/hydroforge">HydroForge</a>, so reading, computing and writing overlap.</p>
+        <a class="more" href="run/configuration/">Configuration →</a>
+      </article>
+      <article class="step" data-fig="scatter">
+        <h3>Every catchment at once</h3>
+        <p>Catchments are numbered from upstream to downstream and stored as plain arrays. One GPU thread per catchment computes its discharge, and the fluxes are added into the downstream storages with atomic adds, so confluences need no ordering.</p>
+      </article>
+      <article class="step" data-fig="stats">
+        <h3>Statistics on the device</h3>
+        <p>Statistics are computed on the GPU while the model runs. Here two are saved from the same discharge: the daily mean, which leaves the GPU when each day ends, and the monthly maximum of those daily means, which stays on the GPU until the month closes. Both are declared once and compiled by <a href="https://github.com/Kshy0/hydroforge">HydroForge</a> into the same update on every backend; background writers append them to NetCDF while the GPU keeps computing.</p>
+        <a class="more" href="run/statistics/">Statistics and output →</a>
+      </article>
+      <article class="step" data-fig="gpus">
+        <h3>Whole basins per GPU</h3>
+        <p>In the model no water moves from one river basin to another, so basins are the unit of work. <code>torchrun</code> starts one process per GPU, and <a href="https://github.com/Kshy0/hydroforge">HydroForge</a> hands each of them whole basins, so a GPU reads only the runoff cells its catchments need.</p>
+        <a class="more" href="quickstart/">Quick start →</a>
+      </article>
+    </div>
+  </div>
+
+  <ul class="features">
+    <li><b>Triton, CUDA and Metal</b><span>Triton by default, CUDA C++ compiled at start-up, and Metal on Apple GPUs, where double precision is emulated with two 32-bit numbers.</span></li>
+    <li><b>Mixed precision</b><span>32-bit arithmetic with water volumes kept in double precision, so small changes survive rounding.</span></li>
+    <li><b>Step replay</b><span>The kernels of a model step are recorded once as a CUDA graph and replayed every step.</span></li>
+    <li><b>Adaptive time step</b><span>The time step follows the CFL condition of the deepest river, day by day.</span></li>
+    <li><b>Optional physics</b><span>Bifurcation channels, levees and dam reservoirs, each a module you switch on.</span></li>
+    <li><b>Checkpoints</b><span>The full model state goes to a file and a run restarts from it.</span></li>
+    <li class="hf"><a href="https://github.com/Kshy0/hydroforge"><b>Built on HydroForge</b><span>The framework under CaMa-Flood-GPU: it generates the kernels, splits runs over GPUs and writes the output, for any model declared in Python.</span><em>Explore HydroForge <span aria-hidden="true">→</span></em></a></li>
+  </ul>
+</section>
+
+<section class="chapter" id="benchmark" aria-labelledby="h-bench">
+  <header class="chapter-head"><p class="no">04</p><h2 id="h-bench">Benchmark</h2><p>One simulated year, from CaMa-Flood on CPUs to CaMa-Flood-GPU.</p></header>
+  <div class="bench">
+    <p class="headline">A global year at 1-arcmin: <b>141 hours</b> on 192 CPU cores, <b class="blue">3 h 51 min</b> on four A100 GPUs, <b class="blue">36.6× faster</b>.</p>
+    <div class="tabs" role="tablist" aria-label="Map resolution"></div>
+    <p class="key">× = faster than CaMa-Flood on 192 CPU cores</p>
+    <div class="chart" role="img" aria-live="polite"></div>
+    <p class="source">Year 2000 with adaptive time stepping and bifurcation, mean wall-clock time of five runs. CPU: CaMa-Flood v4.23 on Intel Xeon 6248R, MPI and OpenMP. From <a href="https://doi.org/10.5194/gmd-19-5623-2026">Kang et al. (2026)</a>.</p>
+  </div>
+</section>
+
+<section class="outro" aria-labelledby="h-outro">
+  <h2 id="h-outro">Read the <em>cookbook</em></h2>
+  <ol class="cards">
+    <li><a href="install/"><b>Installation</b><span>PyTorch, HydroForge and cmfgpu for your GPU</span></a></li>
+    <li><a href="quickstart/"><b>Quick start</b><span>a first global run</span></a></li>
+    <li><a href="inputs/model-input/"><b>River network and parameters</b><span>the model input file</span></a></li>
+    <li><a href="inputs/runoff-mapping/"><b>Runoff mapping</b><span>the sparse matrix W</span></a></li>
+    <li><a href="inputs/datasets/"><b>Runoff datasets</b><span>daily, hourly, NetCDF and binary</span></a></li>
+    <li><a href="run/time-axis/"><b>Time axis</b><span>model steps and the time step</span></a></li>
+    <li><a href="run/statistics/"><b>Statistics and output</b><span>windows, operations, files</span></a></li>
+    <li><a href="reference/variables/"><b>Model variables</b><span>module by module</span></a></li>
+  </ol>
+</section>
+</main>
+
+<footer class="foot">
+  <p>CaMa-Flood-GPU · Apache-2.0 · built on <a href="https://github.com/Kshy0/hydroforge">HydroForge</a> · based on <a href="https://github.com/global-hydrodynamics/CaMa-Flood_v4">CaMa-Flood</a></p>
+  <section id="references" aria-labelledby="h-refs">
+    <h2 id="h-refs">References</h2>
+    <ol class="refs">
+      <li>Kang, S., Yin, J., &amp; Yamazaki, D. (2026). CaMa-Flood-GPU: A GPU-based hydrodynamic model implementation for scalable global simulations. <i>Geoscientific Model Development, 19</i>(12), 5623–5640. <a href="https://doi.org/10.5194/gmd-19-5623-2026">https://doi.org/10.5194/gmd-19-5623-2026</a></li>
+      <li>Yamazaki, D., Kanae, S., Kim, H., &amp; Oki, T. (2011). A physically based description of floodplain inundation dynamics in a global river routing model. <i>Water Resources Research, 47</i>(4), W04501. <a href="https://doi.org/10.1029/2010WR009726">https://doi.org/10.1029/2010WR009726</a></li>
+      <li>Yamazaki, D., de Almeida, G. A. M., &amp; Bates, P. D. (2013). Improving computational efficiency in global river models by implementing the local inertial flow equation and a vector-based river network map. <i>Water Resources Research, 49</i>(11), 7221–7235. <a href="https://doi.org/10.1002/wrcr.20552">https://doi.org/10.1002/wrcr.20552</a></li>
+      <li>Yamazaki, D., Ikeshima, D., Sosa, J., Bates, P. D., Allen, G. H., &amp; Pavelsky, T. M. (2019). MERIT Hydro: A high-resolution global hydrography map based on latest topography dataset. <i>Water Resources Research, 55</i>(6), 5053–5073. <a href="https://doi.org/10.1029/2019WR024873">https://doi.org/10.1029/2019WR024873</a></li>
+    </ol>
+  </section>
+</footer>
+
+<script src="home/data/rivers.js"></script>
+<script src="home/data/hydrograph.js"></script>
+<script src="home/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 840 496" width="100%" class="cmf-fig" role="img" aria-labelledby="substeps-t substeps-d" data-search-exclude="">
+<title id="substeps-t">One model step, sliced into sub-steps</title>
+<desc id="substeps-d">One day of the schedule is solved as N equal sub-steps, dt = T/N, with N fixed or recomputed each day from a CFL limit. Runoff is a constant mean rate across the day. Statistics are updated at every sub-step, and the finished window produces one record.</desc>
+<style>
+svg.cmf-fig{--f-paper:var(--fig-paper,#ffffff);--f-panel:var(--fig-panel,#f7f7f8);--f-ink:var(--fig-ink,#0d0d0d);--f-ink2:var(--fig-ink-2,#555561);--f-ink3:var(--fig-ink-3,#6e6e7a);--f-rule:var(--fig-rule,#e3e3e8);--f-blue:var(--fig-blue,#1859c9);--f-bsoft:var(--fig-blue-soft,#e7eefb);--f-orange:var(--fig-orange,#b54a0c);--f-green:var(--fig-green,#0a7a5c);--f-plum:var(--fig-plum,#a12f6e);font-family:Inter, system-ui, -apple-system, 'Segoe UI', sans-serif}
+@media (prefers-color-scheme:dark){svg.cmf-fig:root{--fig-paper:#0e0e10;--fig-panel:#17171a;--fig-ink:#ececf1;--fig-ink-2:#acacb8;--fig-ink-3:#8a8a96;--fig-rule:#2a2a30;--fig-blue:#6ea6ff;--fig-blue-soft:#15233a;--fig-orange:#f08a4b;--fig-green:#3ec79a;--fig-plum:#e07ab2}}
+svg.cmf-fig text{fill:var(--f-ink);font-size:12px}
+svg.cmf-fig .bg{fill:var(--fig-bg,var(--f-paper))}
+svg.cmf-fig .k{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px;font-weight:500;letter-spacing:.08em;fill:var(--f-blue)}
+svg.cmf-fig .h{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:21px;font-weight:400;letter-spacing:-.01em}
+svg.cmf-fig .sub{font-size:12.5px;fill:var(--f-ink2)}
+svg.cmf-fig .cap{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10px;letter-spacing:.1em;fill:var(--f-ink2)}
+svg.cmf-fig .se{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:15px}
+svg.cmf-fig .it{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-style:italic}
+svg.cmf-fig .m{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px}
+svg.cmf-fig .sm{font-size:11px}
+svg.cmf-fig .b6{font-weight:600}
+svg.cmf-fig .c2{fill:var(--f-ink2)}
+svg.cmf-fig .c3{fill:var(--f-ink3)}
+svg.cmf-fig .cb{fill:var(--f-blue)}
+svg.cmf-fig .co{fill:var(--f-orange)}
+svg.cmf-fig .mid{text-anchor:middle}
+svg.cmf-fig .end{text-anchor:end}
+svg.cmf-fig .ln{fill:none;stroke:var(--f-ink);stroke-width:1}
+svg.cmf-fig .ln2{fill:none;stroke:var(--f-ink2);stroke-width:1}
+svg.cmf-fig .ln3{fill:none;stroke:var(--f-ink3);stroke-width:1}
+svg.cmf-fig .rl{fill:none;stroke:var(--f-rule);stroke-width:1}
+svg.cmf-fig .lb{fill:none;stroke:var(--f-blue);stroke-width:1.5}
+svg.cmf-fig .lo{fill:none;stroke:var(--f-orange);stroke-width:1.5}
+svg.cmf-fig .dash{stroke-dasharray:3 4}
+svg.cmf-fig .fp{fill:var(--f-paper)}
+svg.cmf-fig .fpn{fill:var(--f-panel)}
+svg.cmf-fig .fi{fill:var(--f-ink)}
+svg.cmf-fig .fi2{fill:var(--f-ink2)}
+svg.cmf-fig .fi3{fill:var(--f-ink3)}
+svg.cmf-fig .fb{fill:var(--f-blue)}
+svg.cmf-fig .fbs{fill:var(--f-bsoft)}
+svg.cmf-fig .fo{fill:var(--f-orange)}
+svg.cmf-fig .c-0{fill:var(--f-blue)}
+svg.cmf-fig .c-1{fill:var(--f-orange)}
+svg.cmf-fig .c-2{fill:var(--f-green)}
+svg.cmf-fig .c-3{fill:var(--f-plum)}
+svg.cmf-fig .s-0{fill:none;stroke:var(--f-blue)}
+svg.cmf-fig .s-1{fill:none;stroke:var(--f-orange)}
+svg.cmf-fig .s-2{fill:none;stroke:var(--f-green)}
+svg.cmf-fig .s-3{fill:none;stroke:var(--f-plum)}
+</style>
+<rect x="-20" y="-20" width="840" height="496" class="bg"/>
+<text x="0" y="12" class="k">FIG. 05</text>
+<text x="0" y="38" class="h">One model step, sliced into sub-steps</text>
+<text x="0" y="58" class="sub">One day of the schedule, solved as N equal sub-steps</text>
+<text x="0" y="90"><tspan class="m b6">step_advance()</tspan><tspan class="se it c2">   one model step = one day = 86,400 s</tspan></text>
+<rect x="1" y="115.7" width="98" height="14.3" class="fb" fill-opacity="0.15"/>
+<line x1="1" y1="115.7" x2="99" y2="115.7" class="lb"/>
+<line x1="0" y1="130" x2="0" y2="136" class="ln"/>
+<text x="50" y="150" class="m mid c3" font-size="9.5">Mar 11</text>
+<rect x="101" y="111.8" width="98" height="18.2" class="fb" fill-opacity="0.15"/>
+<line x1="101" y1="111.8" x2="199" y2="111.8" class="lb"/>
+<line x1="100" y1="130" x2="100" y2="136" class="ln"/>
+<text x="150" y="150" class="m mid c3" font-size="9.5">Mar 12</text>
+<rect x="201" y="119.08" width="98" height="10.92" class="fb" fill-opacity="0.15"/>
+<line x1="201" y1="119.08" x2="299" y2="119.08" class="lb"/>
+<line x1="200" y1="130" x2="200" y2="136" class="ln"/>
+<text x="250" y="150" class="m mid c3" font-size="9.5">Mar 13</text>
+<rect x="301" y="108.68" width="98" height="21.32" class="fb" fill-opacity="0.45"/>
+<line x1="301" y1="108.68" x2="399" y2="108.68" class="lb"/>
+<line x1="300" y1="130" x2="300" y2="136" class="ln"/>
+<text x="350" y="150" class="m mid" font-size="9.5">Mar 14</text>
+<rect x="401" y="106.6" width="98" height="23.4" class="fb" fill-opacity="0.15"/>
+<line x1="401" y1="106.6" x2="499" y2="106.6" class="lb"/>
+<line x1="400" y1="130" x2="400" y2="136" class="ln"/>
+<text x="450" y="150" class="m mid c3" font-size="9.5">Mar 15</text>
+<rect x="501" y="114.4" width="98" height="15.6" class="fb" fill-opacity="0.15"/>
+<line x1="501" y1="114.4" x2="599" y2="114.4" class="lb"/>
+<line x1="500" y1="130" x2="500" y2="136" class="ln"/>
+<text x="550" y="150" class="m mid c3" font-size="9.5">Mar 16</text>
+<rect x="601" y="120.12" width="98" height="9.88" class="fb" fill-opacity="0.15"/>
+<line x1="601" y1="120.12" x2="699" y2="120.12" class="lb"/>
+<line x1="600" y1="130" x2="600" y2="136" class="ln"/>
+<text x="650" y="150" class="m mid c3" font-size="9.5">Mar 17</text>
+<line x1="0" y1="130" x2="700" y2="130" class="ln"/>
+<line x1="700" y1="130" x2="700" y2="136" class="ln"/>
+<path d="M300.0,158 L0,182 M400.0,158 L700,182" class="ln3 dash"/>
+<rect x="0" y="182" width="700" height="170" class="ln"/>
+<rect x="0" y="300" width="700" height="52" class="fb" fill-opacity=".12"/>
+<line x1="0" y1="300" x2="700" y2="300" class="lb" stroke-width="2"/>
+<text x="14" y="322" class="m cb">runoff: one mean rate, held constant through all N sub-steps</text>
+<text x="14" y="338" class="sm c2">every sub-step adds runoff × dt</text>
+<path d="M0.0,269.3 L5.8,268.8 L11.7,268.3 L17.5,267.8 L23.3,267.2 L29.2,266.7 L35.0,266.1 L40.8,265.5 L46.7,264.8 L52.5,264.2 L58.3,263.5 L64.2,262.8 L70.0,262.1 L75.8,261.4 L81.7,260.7 L87.5,260.0 L93.3,259.2 L99.2,258.5 L105.0,257.7 L110.8,256.9 L116.7,256.2 L122.5,255.4 L128.3,254.6 L134.2,253.8 L140.0,253.0 L145.8,252.2 L151.7,251.4 L157.5,250.6 L163.3,249.8 L169.2,249.0 L175.0,248.2 L180.8,247.4 L186.7,246.6 L192.5,245.8 L198.3,245.0 L204.2,244.2 L210.0,243.4 L215.8,242.7 L221.7,241.9 L227.5,241.2 L233.3,240.4 L239.2,239.7 L245.0,239.0 L250.8,238.3 L256.7,237.6 L262.5,237.0 L268.3,236.3 L274.2,235.7 L280.0,235.1 L285.8,234.5 L291.7,233.9 L297.5,233.3 L303.3,232.8 L309.2,232.2 L315.0,231.7 L320.8,231.2 L326.7,230.8 L332.5,230.3 L338.3,229.9 L344.2,229.5 L350.0,229.1 L355.8,228.7 L361.7,228.4 L367.5,228.1 L373.3,227.8 L379.2,227.5 L385.0,227.2 L390.8,227.0 L396.7,226.8 L402.5,226.6 L408.3,226.4 L414.2,226.3 L420.0,226.2 L425.8,226.1 L431.7,226.0 L437.5,225.9 L443.3,225.9 L449.2,225.9 L455.0,225.9 L460.8,225.9 L466.7,225.9 L472.5,226.0 L478.3,226.1 L484.2,226.2 L490.0,226.3 L495.8,226.4 L501.7,226.6 L507.5,226.7 L513.3,226.9 L519.2,227.1 L525.0,227.3 L530.8,227.5 L536.7,227.7 L542.5,228.0 L548.3,228.2 L554.2,228.5 L560.0,228.8 L565.8,229.1 L571.7,229.4 L577.5,229.7 L583.3,230.0 L589.2,230.3 L595.0,230.6 L600.8,230.9 L606.7,231.3 L612.5,231.6 L618.3,231.9 L624.2,232.3 L630.0,232.6 L635.8,233.0 L641.7,233.3 L647.5,233.6 L653.3,234.0 L659.2,234.3 L665.0,234.7 L670.8,235.0 L676.7,235.3 L682.5,235.6 L688.3,235.9 L694.2,236.2 L700.0,236.5" class="ln2" stroke-width="1.2"/>
+<path d="M5.7,268.6a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M21.2,267.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M36.8,265.7a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M52.3,264.0a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M67.9,262.1a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M83.5,260.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M99.0,258.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M114.6,256.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M130.1,254.1a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M145.7,251.9a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M161.2,249.8a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M176.8,247.6a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M192.3,245.5a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M207.9,243.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M223.5,241.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M239.0,239.5a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M254.6,237.6a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M270.1,235.9a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M285.7,234.3a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M301.2,232.8a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M316.8,231.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M332.3,230.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M347.9,229.1a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M363.5,228.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M379.0,227.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M394.6,226.8a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M410.1,226.3a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M425.7,226.0a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M441.2,225.9a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M456.8,225.9a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M472.3,226.0a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M487.9,226.3a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M503.5,226.7a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M519.0,227.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M534.6,227.7a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M550.1,228.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M565.7,229.2a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M581.2,230.0a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M596.8,230.8a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M612.3,231.7a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M627.9,232.6a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M643.5,233.5a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M659.0,234.4a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M674.6,235.3a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0M690.1,236.1a2.1,2.1 0 1,0 4.2,0a2.1,2.1 0 1,0 -4.2,0" class="fo"/>
+<line x1="0" y1="238.825" x2="700" y2="238.825" class="lo dash" stroke-width="1.3"/>
+<text x="14" y="202" class="m c2">outflow, updated every sub-step</text>
+<text x="688" y="254.825" class="m co end">daily mean = Σ q·dt / T</text>
+<text x="0" y="376" class="m c2 mid" font-size="9.5">0</text>
+<text x="116.667" y="376" class="m c2 mid" font-size="9.5">60</text>
+<text x="233.333" y="376" class="m c2 mid" font-size="9.5">120</text>
+<text x="350" y="376" class="m c2 mid" font-size="9.5">180</text>
+<text x="466.667" y="376" class="m c2 mid" font-size="9.5">240</text>
+<text x="583.333" y="376" class="m c2 mid" font-size="9.5">300</text>
+<text x="700" y="376" class="m c2 mid" font-size="9.5">360</text>
+<path d="M0.00,352v10M116.67,352v10M233.33,352v10M350.00,352v10M466.67,352v10M583.33,352v10M700.00,352v10" class="ln" stroke-width=".9"/>
+<path d="M19.44,352v6M38.89,352v6M58.33,352v6M77.78,352v6M97.22,352v6M136.11,352v6M155.56,352v6M175.00,352v6M194.44,352v6M213.89,352v6M252.78,352v6M272.22,352v6M291.67,352v6M311.11,352v6M330.56,352v6M369.44,352v6M388.89,352v6M408.33,352v6M427.78,352v6M447.22,352v6M486.11,352v6M505.56,352v6M525.00,352v6M544.44,352v6M563.89,352v6M602.78,352v6M622.22,352v6M641.67,352v6M661.11,352v6M680.56,352v6" class="ln" stroke-width=".5"/>
+<path d="M1.94,352v3M3.89,352v3M5.83,352v3M7.78,352v3M9.72,352v3M11.67,352v3M13.61,352v3M15.56,352v3M17.50,352v3M21.39,352v3M23.33,352v3M25.28,352v3M27.22,352v3M29.17,352v3M31.11,352v3M33.06,352v3M35.00,352v3M36.94,352v3M40.83,352v3M42.78,352v3M44.72,352v3M46.67,352v3M48.61,352v3M50.56,352v3M52.50,352v3M54.44,352v3M56.39,352v3M60.28,352v3M62.22,352v3M64.17,352v3M66.11,352v3M68.06,352v3M70.00,352v3M71.94,352v3M73.89,352v3M75.83,352v3M79.72,352v3M81.67,352v3M83.61,352v3M85.56,352v3M87.50,352v3M89.44,352v3M91.39,352v3M93.33,352v3M95.28,352v3M99.17,352v3M101.11,352v3M103.06,352v3M105.00,352v3M106.94,352v3M108.89,352v3M110.83,352v3M112.78,352v3M114.72,352v3M118.61,352v3M120.56,352v3M122.50,352v3M124.44,352v3M126.39,352v3M128.33,352v3M130.28,352v3M132.22,352v3M134.17,352v3M138.06,352v3M140.00,352v3M141.94,352v3M143.89,352v3M145.83,352v3M147.78,352v3M149.72,352v3M151.67,352v3M153.61,352v3M157.50,352v3M159.44,352v3M161.39,352v3M163.33,352v3M165.28,352v3M167.22,352v3M169.17,352v3M171.11,352v3M173.06,352v3M176.94,352v3M178.89,352v3M180.83,352v3M182.78,352v3M184.72,352v3M186.67,352v3M188.61,352v3M190.56,352v3M192.50,352v3M196.39,352v3M198.33,352v3M200.28,352v3M202.22,352v3M204.17,352v3M206.11,352v3M208.06,352v3M210.00,352v3M211.94,352v3M215.83,352v3M217.78,352v3M219.72,352v3M221.67,352v3M223.61,352v3M225.56,352v3M227.50,352v3M229.44,352v3M231.39,352v3M235.28,352v3M237.22,352v3M239.17,352v3M241.11,352v3M243.06,352v3M245.00,352v3M246.94,352v3M248.89,352v3M250.83,352v3M254.72,352v3M256.67,352v3M258.61,352v3M260.56,352v3M262.50,352v3M264.44,352v3M266.39,352v3M268.33,352v3M270.28,352v3M274.17,352v3M276.11,352v3M278.06,352v3M280.00,352v3M281.94,352v3M283.89,352v3M285.83,352v3M287.78,352v3M289.72,352v3M293.61,352v3M295.56,352v3M297.50,352v3M299.44,352v3M301.39,352v3M303.33,352v3M305.28,352v3M307.22,352v3M309.17,352v3M313.06,352v3M315.00,352v3M316.94,352v3M318.89,352v3M320.83,352v3M322.78,352v3M324.72,352v3M326.67,352v3M328.61,352v3M332.50,352v3M334.44,352v3M336.39,352v3M338.33,352v3M340.28,352v3M342.22,352v3M344.17,352v3M346.11,352v3M348.06,352v3M351.94,352v3M353.89,352v3M355.83,352v3M357.78,352v3M359.72,352v3M361.67,352v3M363.61,352v3M365.56,352v3M367.50,352v3M371.39,352v3M373.33,352v3M375.28,352v3M377.22,352v3M379.17,352v3M381.11,352v3M383.06,352v3M385.00,352v3M386.94,352v3M390.83,352v3M392.78,352v3M394.72,352v3M396.67,352v3M398.61,352v3M400.56,352v3M402.50,352v3M404.44,352v3M406.39,352v3M410.28,352v3M412.22,352v3M414.17,352v3M416.11,352v3M418.06,352v3M420.00,352v3M421.94,352v3M423.89,352v3M425.83,352v3M429.72,352v3M431.67,352v3M433.61,352v3M435.56,352v3M437.50,352v3M439.44,352v3M441.39,352v3M443.33,352v3M445.28,352v3M449.17,352v3M451.11,352v3M453.06,352v3M455.00,352v3M456.94,352v3M458.89,352v3M460.83,352v3M462.78,352v3M464.72,352v3M468.61,352v3M470.56,352v3M472.50,352v3M474.44,352v3M476.39,352v3M478.33,352v3M480.28,352v3M482.22,352v3M484.17,352v3M488.06,352v3M490.00,352v3M491.94,352v3M493.89,352v3M495.83,352v3M497.78,352v3M499.72,352v3M501.67,352v3M503.61,352v3M507.50,352v3M509.44,352v3M511.39,352v3M513.33,352v3M515.28,352v3M517.22,352v3M519.17,352v3M521.11,352v3M523.06,352v3M526.94,352v3M528.89,352v3M530.83,352v3M532.78,352v3M534.72,352v3M536.67,352v3M538.61,352v3M540.56,352v3M542.50,352v3M546.39,352v3M548.33,352v3M550.28,352v3M552.22,352v3M554.17,352v3M556.11,352v3M558.06,352v3M560.00,352v3M561.94,352v3M565.83,352v3M567.78,352v3M569.72,352v3M571.67,352v3M573.61,352v3M575.56,352v3M577.50,352v3M579.44,352v3M581.39,352v3M585.28,352v3M587.22,352v3M589.17,352v3M591.11,352v3M593.06,352v3M595.00,352v3M596.94,352v3M598.89,352v3M600.83,352v3M604.72,352v3M606.67,352v3M608.61,352v3M610.56,352v3M612.50,352v3M614.44,352v3M616.39,352v3M618.33,352v3M620.28,352v3M624.17,352v3M626.11,352v3M628.06,352v3M630.00,352v3M631.94,352v3M633.89,352v3M635.83,352v3M637.78,352v3M639.72,352v3M643.61,352v3M645.56,352v3M647.50,352v3M649.44,352v3M651.39,352v3M653.33,352v3M655.28,352v3M657.22,352v3M659.17,352v3M663.06,352v3M665.00,352v3M666.94,352v3M668.89,352v3M670.83,352v3M672.78,352v3M674.72,352v3M676.67,352v3M678.61,352v3M682.50,352v3M684.44,352v3M686.39,352v3M688.33,352v3M690.28,352v3M692.22,352v3M694.17,352v3M696.11,352v3M698.06,352v3" class="ln" stroke-width=".5" stroke-opacity=".45"/>
+<text x="700" y="392" class="m c3 end" font-size="9.5">sub-step k</text>
+<text x="0" y="392" class="m c3" font-size="9.5">0:00</text>
+<circle cx="700" cy="238.825" r="3.2" class="fo"/>
+<path d="M704,238.825 L716.00,238.83" class="lo"/><path d="M722,238.825 L716.00,236.31 L716.00,241.35 Z" class="fo"/>
+<path d="M726,214.82509104444347 H756 L766,224.82509104444347 V262.82509104444347 H726 Z" class="ln fp"/><path d="M756,214.82509104444347 V224.82509104444347 H766" class="ln"/>
+<text x="746" y="250.825" class="se it co mid" font-size="14">.nc</text>
+<text x="718" y="282.825" class="sm">1 record</text>
+<text x="718" y="297.825" class="sm c2">per window</text>
+<line x1="0" y1="408" x2="800" y2="408" class="rl"/>
+<text x="0" y="426" class="m b6" font-size="12">N = 360 sub-steps</text>
+<text x="160" y="426" class="m b6" font-size="12">dt = T / N = 240 s</text>
+<text x="800" y="426" class="se it c2 end" font-size="14">or N from a CFL limit, recomputed each day (adaptive_time)</text>
+<circle cx="4" cy="447" r="2.6" class="fo"/>
+<text x="14" y="451" class="m c2">statistics update at every sub-step (every 8th drawn)</text>
+</svg>

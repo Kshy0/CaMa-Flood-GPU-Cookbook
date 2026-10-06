@@ -1,0 +1,80 @@
+site_name: CaMa-Flood-GPU
+site_url: https://kshy0.github.io/CaMa-Flood-GPU-Cookbook/
+repo_url: https://github.com/Kshy0/CaMa-Flood-GPU
+
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.sections
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+extra_css:
+  - https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,500;0,600;1,500&display=swap
+  - stylesheets/extra.css
+  - stylesheets/timeline.css
+
+extra_javascript:
+  - javascripts/timeline.js
+
+# notes for editors, not pages
+exclude_docs: |
+  figures/README-include.md
+  home/data/README.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: !relative $docs_dir
+      check_paths: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Overview: overview.md
+  - Installation: install.md
+  - Quick start: quickstart.md
+  - Inputs:
+      - River network and parameters: inputs/model-input.md
+      - Runoff mapping: inputs/runoff-mapping.md
+      - Runoff datasets: inputs/datasets.md
+  - Running:
+      - Time axis: run/time-axis.md
+      - Statistics and output: run/statistics.md
+      - Configuration: run/configuration.md
+  - Outputs:
+      - Output files: outputs/output-files.md
+      - Checkpoint and restart: outputs/checkpoint.md
+  - Reference:
+      - Model variables: reference/variables.md
+  - Benchmark: benchmark.md

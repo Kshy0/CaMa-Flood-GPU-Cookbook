@@ -1,0 +1,1035 @@
+/* Interactive run timeline (docs/javascripts/timeline.js). Reads only the --cmf-* token
+   names from extra.css, so it follows both colour schemes and any palette change. */
+
+.md-typeset .cmf-timeline {
+  --tl-ink: var(--cmf-ink, #0d0d0d);
+  --tl-ink-2: var(--cmf-ink-2, #555561);
+  --tl-ink-3: var(--cmf-ink-3, #6e6e7a);
+  --tl-rule: var(--cmf-rule, #e3e3e8);
+  --tl-paper: var(--cmf-paper, #fff);
+  --tl-paper-2: var(--cmf-paper-2, #f7f7f8);
+  --tl-blue: var(--cmf-blue, #1859c9);
+  --tl-max: var(--cmf-orange, #b54a0c);
+  /* loader and writer processes; blue is the data, orange the maxima */
+  --tl-w0: var(--cmf-green, #0a7a5c);
+  --tl-w1: var(--cmf-plum, #a12f6e);
+  --tl-w2: #6a4fd6;
+  --tl-w3: #8a6400;
+  --tl-mono: var(--cmf-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  --tl-sans: var(--cmf-display, Inter, system-ui, sans-serif);
+  --tl-h: 1.6rem;          /* control height */
+  --tl-r: 999px;           /* pill radius */
+  --tl-soft: color-mix(in srgb, var(--tl-ink) 5%, var(--tl-paper));
+  --tl-soft-2: color-mix(in srgb, var(--tl-ink) 9%, var(--tl-paper));
+  --tl-focus: 0 0 0 2px var(--tl-paper), 0 0 0 4px color-mix(in srgb, var(--tl-blue) 70%, transparent);
+  margin: 2.2em 0;
+  padding: 1.1rem 1.2rem 1rem;
+  border: 1px solid var(--tl-rule);
+  border-radius: 16px;
+  background: var(--tl-paper);
+  font-family: var(--tl-sans);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--tl-ink);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .cmf-timeline {
+  --tl-w2: #a996ff;
+  --tl-w3: #e2b84f;
+}
+
+.md-typeset .cmf-timeline:not(.cmf-tl-ready) {
+  color: var(--tl-ink-2);
+}
+
+.cmf-timeline .cmf-tl-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* header */
+.cmf-timeline .cmf-tl-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.cmf-timeline .cmf-tl-kicker {
+  font-family: var(--tl-mono);
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tl-blue);
+}
+
+.cmf-timeline .cmf-tl-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.cmf-timeline .cmf-tl-subtitle {
+  flex-basis: 100%;
+  font-size: 0.64rem;
+  font-style: italic;
+  color: var(--tl-ink-3);
+}
+
+/* shared control look */
+.cmf-timeline button,
+.cmf-timeline select {
+  font-family: var(--tl-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cmf-timeline :is(button, select, .cmf-tl-scrub):focus-visible,
+.cmf-timeline :is(.cmf-tl-segopt, .cmf-tl-toggle):has(input:focus-visible) {
+  outline: none;
+  box-shadow: var(--tl-focus);
+}
+
+/* presets */
+.cmf-timeline .cmf-tl-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.cmf-timeline .cmf-tl-pill {
+  height: var(--tl-h);
+  padding: 0 0.75rem;
+  border: 1px solid var(--tl-rule);
+  border-radius: var(--tl-r);
+  background: var(--tl-paper);
+  color: var(--tl-ink-2);
+  font-size: 0.64rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.cmf-timeline .cmf-tl-pill:hover {
+  color: var(--tl-ink);
+  border-color: color-mix(in srgb, var(--tl-ink) 25%, var(--tl-rule));
+}
+
+.cmf-timeline .cmf-tl-pill[aria-pressed="true"] {
+  background: var(--tl-ink);
+  border-color: var(--tl-ink);
+  color: var(--tl-paper);
+}
+
+.cmf-timeline .cmf-tl-presetdesc {
+  margin: 0.45rem 0 0;
+  font-size: 0.64rem;
+  color: var(--tl-ink-3);
+}
+
+/* configure disclosure */
+.cmf-timeline .cmf-tl-more {
+  margin: 0.7rem 0 0;
+  border: 1px solid var(--tl-rule);
+  border-radius: 12px;
+  background: var(--tl-paper-2);
+}
+
+.cmf-timeline .cmf-tl-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 2.1rem;
+  padding: 0.25rem 0.85rem;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tl-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.cmf-timeline .cmf-tl-chev {
+  flex: none;
+  width: 0.36rem;
+  height: 0.36rem;
+  margin-right: 0.1rem;
+  border-right: 1.5px solid var(--tl-ink-2);
+  border-bottom: 1.5px solid var(--tl-ink-2);
+  transform: rotate(-45deg);
+  transition: transform 0.15s;
+}
+
+.cmf-timeline .cmf-tl-open .cmf-tl-chev {
+  transform: rotate(45deg);
+}
+
+.cmf-timeline .cmf-tl-config[hidden] {
+  display: none;
+}
+
+.cmf-timeline .cmf-tl-sumlab {
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.cmf-timeline .cmf-tl-sumcfg {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--tl-mono);
+  font-size: 0.56rem;
+  color: var(--tl-ink-3);
+}
+
+.cmf-timeline .cmf-tl-config {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.65rem 0.9rem;
+  padding: 0.3rem 0.8rem 0.85rem;
+}
+
+.cmf-timeline .cmf-tl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.cmf-timeline .cmf-tl-flab,
+.cmf-timeline .cmf-tl-field > legend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+  font-family: var(--tl-mono);
+  font-size: 0.55rem;
+  color: var(--tl-ink-2);
+}
+
+.cmf-timeline .cmf-tl-wide,
+.cmf-timeline .cmf-tl-ops {
+  grid-column: span 2;
+}
+
+/* segmented control (native radios underneath) */
+.cmf-timeline .cmf-tl-seg {
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 2px;
+  gap: 2px;
+  border-radius: var(--tl-r);
+  background: var(--tl-soft-2);
+}
+
+.cmf-timeline .cmf-tl-segopt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.7rem;
+  height: calc(var(--tl-h) - 4px);
+  padding: 0 0.55rem;
+  border-radius: var(--tl-r);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--tl-ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.cmf-timeline .cmf-tl-segopt:hover {
+  color: var(--tl-ink);
+}
+
+.cmf-timeline .cmf-tl-segopt:has(input:checked) {
+  background: var(--tl-paper);
+  color: var(--tl-ink);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--tl-ink) 14%, transparent), 0 0 0 1px color-mix(in srgb, var(--tl-ink) 6%, transparent);
+}
+
+.cmf-timeline .cmf-tl-segopt:has(input:disabled) {
+  color: color-mix(in srgb, var(--tl-ink-3) 55%, transparent);
+  cursor: not-allowed;
+}
+
+.cmf-timeline .cmf-tl-segopt:has(input:checked:disabled) {
+  color: var(--tl-ink-2);
+}
+
+/* operations: toggle chips (native checkboxes underneath) */
+.cmf-timeline .cmf-tl-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.cmf-timeline .cmf-tl-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--tl-h);
+  padding: 0 0.65rem;
+  border: 1px solid var(--tl-rule);
+  border-radius: var(--tl-r);
+  background: var(--tl-paper);
+  font-family: var(--tl-mono);
+  font-size: 0.58rem;
+  color: var(--tl-ink-2);
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.cmf-timeline .cmf-tl-toggle span::before {
+  content: "+ ";
+  color: var(--tl-ink-3);
+}
+
+.cmf-timeline .cmf-tl-toggle:has(input:checked) {
+  border-color: var(--tl-ink);
+  background: var(--tl-ink);
+  color: var(--tl-paper);
+}
+
+.cmf-timeline .cmf-tl-toggle:has(input:checked) span::before {
+  content: "✓ ";
+  color: inherit;
+}
+
+/* small pill selects */
+.cmf-timeline .cmf-tl-select {
+  height: var(--tl-h);
+  max-width: 100%;
+  padding: 0 1.7rem 0 0.7rem;
+  border: 1px solid var(--tl-rule);
+  border-radius: var(--tl-r);
+  background-color: var(--tl-paper);
+  background-image: linear-gradient(45deg, transparent 50%, var(--tl-ink-2) 50%), linear-gradient(135deg, var(--tl-ink-2) 50%, transparent 50%);
+  background-position: right 0.85rem center, right 0.6rem center;
+  background-size: 0.25rem 0.25rem, 0.25rem 0.25rem;
+  background-repeat: no-repeat;
+  color: var(--tl-ink);
+  font-size: 0.62rem;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.cmf-timeline .cmf-tl-wide .cmf-tl-select {
+  align-self: flex-start;
+}
+
+.cmf-timeline .cmf-tl-select:hover {
+  border-color: color-mix(in srgb, var(--tl-ink) 25%, var(--tl-rule));
+}
+
+.cmf-timeline .cmf-tl-select option {
+  background: var(--tl-paper);
+  color: var(--tl-ink);
+}
+
+/* rule text */
+.cmf-timeline .cmf-tl-rules {
+  margin: 0.6rem 0 0;
+}
+
+.cmf-timeline .cmf-tl-rules p {
+  margin: 0.2rem 0;
+  font-size: 0.62rem;
+  line-height: 1.55;
+  color: var(--tl-ink-2);
+}
+
+.cmf-timeline :is(.cmf-tl-rules, .cmf-tl-recs, .cmf-tl-files) code {
+  font-size: 0.58rem;
+  padding: 0 0.25em;
+  border-radius: 4px;
+}
+
+.md-typeset .cmf-timeline .cmf-tl-err {
+  color: var(--tl-max);
+}
+
+/* transport */
+.cmf-timeline .cmf-tl-transport {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.9rem 0 0.4rem;
+}
+
+.cmf-timeline .cmf-tl-grow {
+  flex: 1 1 0;
+}
+
+.cmf-timeline .cmf-tl-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 1.85rem;
+  min-width: 5.2rem;
+  padding: 0 1rem 0 0.85rem;
+  border: 0;
+  border-radius: var(--tl-r);
+  background: var(--tl-ink);
+  color: var(--tl-paper);
+  font-size: 0.66rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.15s;
+}
+
+.cmf-timeline .cmf-tl-play:hover {
+  opacity: 0.86;
+}
+
+.cmf-timeline .cmf-tl-play:active {
+  transform: scale(0.97);
+}
+
+.cmf-timeline :is(.cmf-tl-play, .cmf-tl-icon) svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.cmf-timeline .cmf-tl-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+  border: 1px solid var(--tl-rule);
+  border-radius: 50%;
+  background: var(--tl-paper);
+  color: var(--tl-ink);
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.cmf-timeline .cmf-tl-icon:hover {
+  background: var(--tl-soft);
+  border-color: color-mix(in srgb, var(--tl-ink) 25%, var(--tl-rule));
+}
+
+/* scrubber: the whole run as a small hydrograph */
+.cmf-timeline .cmf-tl-scrub {
+  position: relative;
+  margin: 0.2rem 0 0;
+  border-radius: 10px;
+  touch-action: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cmf-timeline .tl-ov-ghost {
+  fill: var(--tl-soft-2);
+}
+
+.cmf-timeline .tl-ov-area {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .tl-ov-spin-done {
+  fill: color-mix(in srgb, var(--tl-ink) 30%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-ov-base {
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-ov-stall {
+  fill: var(--tl-max);
+}
+
+.cmf-timeline .tl-ov-now {
+  stroke: var(--tl-ink);
+  stroke-width: 1.2;
+}
+
+.cmf-timeline .tl-ov-knob {
+  fill: var(--tl-paper);
+  stroke: var(--tl-ink);
+  stroke-width: 2;
+  transition: r 0.15s;
+}
+
+.cmf-timeline .cmf-tl-scrub:is(:hover, :focus-visible) .tl-ov-knob,
+.cmf-timeline.cmf-tl-playing .tl-ov-knob {
+  r: 7.5px;
+}
+
+/* readout */
+.cmf-timeline .cmf-tl-readout {
+  min-height: 2.9em;
+  margin: 0.35rem 0 0.4rem;
+  font-size: 0.64rem;
+  line-height: 1.75;
+  color: var(--tl-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.cmf-timeline .cmf-tl-readout b {
+  font-weight: 600;
+  color: var(--tl-ink);
+}
+
+.cmf-timeline .cmf-tl-sep {
+  color: var(--tl-ink-3);
+}
+
+.cmf-timeline .cmf-tl-phase {
+  display: inline-block;
+  margin-right: 0.45rem;
+  padding: 0 0.5rem;
+  border-radius: var(--tl-r);
+  background: color-mix(in srgb, var(--tl-blue) 12%, var(--tl-paper));
+  color: var(--tl-blue);
+  font-size: 0.58rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.cmf-timeline .cmf-tl-phase-spin {
+  background: var(--tl-soft-2);
+  color: var(--tl-ink-2);
+}
+
+.cmf-timeline .cmf-tl-warn {
+  color: var(--tl-max);
+}
+
+.cmf-timeline .cmf-tl-warn i {
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin: 0 0.3rem 0.05rem 0;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cmf-timeline .cmf-tl-ok {
+  color: var(--tl-w0);
+}
+
+/* the figure */
+.cmf-timeline .cmf-tl-stage {
+  margin: 1.1rem 0 0.3rem;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cmf-timeline .cmf-tl-svg {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.cmf-timeline .cmf-tl-svg text {
+  font-family: var(--tl-mono);
+  font-size: 10px;
+  fill: var(--tl-ink-2);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-xs {
+  font-size: 9.5px;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-muted {
+  fill: var(--tl-ink-3);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-strong {
+  fill: var(--tl-ink);
+  font-weight: 600;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-blue {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-ital {
+  font-family: var(--tl-sans);
+  font-style: italic;
+  font-weight: 500;
+  fill: var(--tl-ink);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-title {
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-cap {
+  font-size: 12px;
+  fill: var(--tl-ink-2);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-hint {
+  font-size: 13px;
+  fill: var(--tl-ink-3);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-hint-warn {
+  fill: var(--tl-max);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-gpu {
+  fill: var(--tl-blue);
+  font-weight: 700;
+}
+
+.cmf-timeline .tl-hatch-bg {
+  fill: var(--tl-paper);
+}
+
+.cmf-timeline .tl-hatch {
+  stroke: color-mix(in srgb, var(--tl-ink) 28%, var(--tl-paper));
+  stroke-width: 1.4;
+}
+
+.cmf-timeline :is(.tl-card, .tl-panel) {
+  fill: var(--tl-paper);
+  stroke: color-mix(in srgb, var(--tl-ink) 62%, var(--tl-paper));
+  stroke-width: 1.2;
+}
+
+.cmf-timeline .tl-ghost {
+  fill: var(--tl-soft-2);
+}
+
+.cmf-timeline .tl-area {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .tl-open {
+  fill: color-mix(in srgb, var(--tl-blue) 30%, var(--tl-paper));
+  stroke: var(--tl-blue);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.cmf-timeline .tl-front {
+  stroke: var(--tl-blue);
+  stroke-width: 1.6;
+  stroke-dasharray: 0.1 4;
+  stroke-linecap: round;
+}
+
+.cmf-timeline .tl-front-off {
+  stroke: var(--tl-ink-3);
+}
+
+.cmf-timeline .tl-drop {
+  opacity: 0.8;
+}
+
+.cmf-timeline .tl-axis {
+  stroke: var(--tl-ink-2);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-tick {
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-outer-sep {
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  opacity: 0.55;
+}
+
+/* max_mean marker */
+.cmf-timeline .tl-max-line {
+  stroke: var(--tl-max);
+  stroke-width: 1.8;
+}
+
+.cmf-timeline .tl-max-dot {
+  fill: var(--tl-max);
+  stroke: var(--tl-paper);
+  stroke-width: 1.5;
+}
+
+.cmf-timeline .tl-max-old {
+  opacity: 0.45;
+}
+
+.cmf-timeline .tl-max-lead {
+  fill: none;
+  stroke: var(--tl-max);
+  stroke-width: 1;
+}
+
+.cmf-timeline .cmf-tl-svg :is(.tl-max-lab, .tl-max-sub, .tl-mean-lab) {
+  paint-order: stroke;
+  stroke: var(--tl-paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-max-lab {
+  fill: var(--tl-max);
+  font-weight: 600;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-max-sub {
+  font-size: 11.5px;
+  fill: var(--tl-ink);
+}
+
+/* records in flight */
+.cmf-timeline .tl-pt {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .tl-pt-max {
+  fill: var(--tl-max);
+}
+
+/* output files */
+.cmf-timeline .tl-file-doc {
+  fill: var(--tl-paper);
+  stroke: var(--tl-ink-2);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.cmf-timeline .tl-file-fold {
+  fill: none;
+  stroke: var(--tl-ink-2);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.cmf-timeline .tl-file-empty :is(.tl-file-doc, .tl-file-fold) {
+  stroke: var(--tl-ink-3);
+  stroke-dasharray: 3 2.5;
+}
+
+.cmf-timeline .tl-file-busy .tl-file-doc {
+  fill: color-mix(in srgb, var(--tl-blue) 7%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-file-line {
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-nc {
+  font-family: var(--tl-sans);
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 600;
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-fname {
+  fill: var(--tl-ink);
+  font-weight: 600;
+}
+
+.cmf-timeline .tl-slot-bg {
+  fill: var(--tl-paper-2);
+  stroke: var(--tl-rule);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-slot-fill {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .tl-slot-q {
+  fill: color-mix(in srgb, var(--w) 25%, var(--tl-paper));
+  stroke: var(--w);
+  stroke-width: 1.2;
+  stroke-dasharray: 2 2;
+}
+
+.cmf-timeline .tl-slot-w {
+  fill: var(--w);
+}
+
+.cmf-timeline .tl-pkt-box {
+  fill: var(--w);
+}
+
+.cmf-timeline .cmf-tl-svg .tl-pkt-txt {
+  font-size: 9px;
+  font-weight: 600;
+  fill: var(--tl-paper);
+}
+
+.cmf-timeline .tl-wdot {
+  fill: var(--w);
+  stroke: var(--tl-paper);
+  stroke-width: 1.5;
+}
+
+/* worker colours (data stays blue, maxima stay orange) */
+.cmf-timeline .tl-wc0 { --w: var(--tl-w0); }
+.cmf-timeline .tl-wc1 { --w: var(--tl-w1); }
+.cmf-timeline .tl-wc2 { --w: var(--tl-w2); }
+.cmf-timeline .tl-wc3 { --w: var(--tl-w3); }
+.cmf-timeline .tl-wm { --w: var(--tl-ink-2); }
+
+/* time axis: strip, panel, chunks */
+.cmf-timeline .tl-blk {
+  fill: color-mix(in srgb, var(--tl-blue) 20%, var(--tl-paper));
+  stroke: color-mix(in srgb, var(--tl-blue) 70%, var(--tl-paper));
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-blk-done {
+  fill: color-mix(in srgb, var(--tl-blue) 36%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-blk-cur {
+  fill: color-mix(in srgb, var(--tl-blue) 78%, var(--tl-paper));
+  stroke: var(--tl-blue);
+}
+
+.cmf-timeline .tl-blk-sp {
+  fill: transparent;
+  stroke: var(--tl-ink-3);
+}
+
+.cmf-timeline .tl-blk-sp.tl-blk-cur {
+  fill: color-mix(in srgb, var(--tl-ink) 22%, transparent);
+  stroke: var(--tl-ink-2);
+}
+
+.cmf-timeline .tl-rec {
+  stroke: var(--tl-ink-2);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-pub {
+  fill: var(--tl-paper);
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.cmf-timeline .tl-pub-done {
+  fill: var(--tl-max);
+  stroke: var(--tl-max);
+}
+
+.cmf-timeline .tl-nowline {
+  stroke: var(--tl-ink);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.cmf-timeline .tl-proj {
+  fill: none;
+  stroke: var(--tl-ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 3;
+}
+
+.cmf-timeline .tl-band-bg {
+  fill: color-mix(in srgb, var(--tl-blue) 5%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-ins-q-ghost,
+.cmf-timeline .tl-ins-r-ghost {
+  fill: var(--tl-soft-2);
+}
+
+.cmf-timeline .tl-ins-q {
+  fill: var(--tl-blue);
+}
+
+.cmf-timeline .tl-ins-r {
+  fill: color-mix(in srgb, var(--tl-blue) 45%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-ins-dot {
+  fill: var(--tl-max);
+  stroke: var(--tl-paper);
+  stroke-width: 1.5;
+}
+
+.cmf-timeline .tl-band {
+  fill: color-mix(in srgb, var(--tl-blue) 16%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-band-top {
+  stroke: var(--tl-blue);
+  stroke-width: 1.5;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-band-lab {
+  fill: var(--tl-ink);
+}
+
+.cmf-timeline .tl-curve-todo {
+  fill: none;
+  stroke: var(--tl-ink-3);
+  stroke-width: 1.2;
+}
+
+.cmf-timeline .tl-curve-done {
+  fill: none;
+  stroke: var(--tl-max);
+  stroke-width: 1.6;
+}
+
+.cmf-timeline .tl-curve-spin {
+  stroke: var(--tl-ink-2);
+}
+
+.cmf-timeline .tl-dots circle,
+.cmf-timeline .tl-dots-key {
+  fill: var(--tl-max);
+}
+
+.cmf-timeline .tl-dots-off circle {
+  fill: var(--tl-paper);
+  stroke: var(--tl-ink-3);
+}
+
+.cmf-timeline .tl-mean {
+  stroke: var(--tl-max);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-mean-lab {
+  fill: var(--tl-max);
+}
+
+.cmf-timeline .tl-play {
+  stroke: var(--tl-ink);
+  stroke-width: 1.2;
+}
+
+.cmf-timeline .tl-play-knob {
+  fill: var(--tl-ink);
+}
+
+.cmf-timeline .tl-veil {
+  fill: color-mix(in srgb, var(--tl-paper) 80%, transparent);
+}
+
+.cmf-timeline .tl-lane {
+  stroke: var(--tl-rule);
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-ch {
+  stroke-width: 1;
+}
+
+.cmf-timeline .tl-ch-off {
+  fill: var(--tl-paper);
+  stroke: var(--tl-rule);
+  stroke-dasharray: 2 3;
+}
+
+.cmf-timeline .tl-ch-queued {
+  fill: var(--tl-paper);
+  stroke: var(--w);
+  stroke-dasharray: 3 2;
+}
+
+.cmf-timeline .tl-ch-reading {
+  fill: color-mix(in srgb, var(--w) 8%, var(--tl-paper));
+  stroke: var(--w);
+}
+
+.cmf-timeline .tl-ch-prog {
+  fill: color-mix(in srgb, var(--w) 40%, var(--tl-paper));
+}
+
+.cmf-timeline .tl-ch-ready {
+  fill: color-mix(in srgb, var(--w) 26%, var(--tl-paper));
+  stroke: var(--w);
+}
+
+.cmf-timeline .tl-ch-inuse {
+  fill: var(--w);
+  stroke: var(--w);
+}
+
+.cmf-timeline .tl-ch-used {
+  fill: color-mix(in srgb, var(--w) 8%, var(--tl-paper));
+  stroke: color-mix(in srgb, var(--w) 30%, var(--tl-paper));
+}
+
+.cmf-timeline .cmf-tl-svg .tl-chlab {
+  font-size: 9px;
+  fill: var(--tl-ink);
+  pointer-events: none;
+}
+
+.cmf-timeline .cmf-tl-svg .tl-chlab-inv {
+  fill: var(--tl-paper);
+}
+
+.cmf-timeline .cmf-tl-foot {
+  margin: 0.8rem 0 0;
+  font-size: 0.58rem;
+  line-height: 1.55;
+  color: var(--tl-ink-3);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .cmf-timeline {
+    padding: 0.9rem 0.75rem 0.8rem;
+    border-radius: 14px;
+  }
+
+  .cmf-timeline .cmf-tl-config {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0.3rem 0.6rem 0.75rem;
+  }
+
+  .cmf-timeline :is(.cmf-tl-wide, .cmf-tl-ops) {
+    grid-column: 1 / -1;
+  }
+
+  .cmf-timeline .cmf-tl-segopt {
+    padding: 0 0.42rem;
+    min-width: 1.45rem;
+  }
+
+  .cmf-timeline .cmf-tl-grow {
+    display: none;
+  }
+
+  .cmf-timeline .cmf-tl-sumcfg {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmf-timeline *,
+  .cmf-timeline *::before {
+    transition: none !important;
+    animation: none !important;
+  }
+}

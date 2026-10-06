@@ -1,0 +1,305 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 840 728" width="100%" class="cmf-fig" role="img" aria-labelledby="statistics-t statistics-d" data-search-exclude="">
+<title id="statistics-t">Statistics on the GPU, saved in the background</title>
+<desc id="statistics-d">Model state on the GPU is filtered to the requested variables and saved catchments; accumulators are updated every sub-step on the device and only finished windows are copied off. Background writer processes compress and write NetCDF while the GPU simulates the next days.</desc>
+<style>
+svg.cmf-fig{--f-paper:var(--fig-paper,#ffffff);--f-panel:var(--fig-panel,#f7f7f8);--f-ink:var(--fig-ink,#0d0d0d);--f-ink2:var(--fig-ink-2,#555561);--f-ink3:var(--fig-ink-3,#6e6e7a);--f-rule:var(--fig-rule,#e3e3e8);--f-blue:var(--fig-blue,#1859c9);--f-bsoft:var(--fig-blue-soft,#e7eefb);--f-orange:var(--fig-orange,#b54a0c);--f-green:var(--fig-green,#0a7a5c);--f-plum:var(--fig-plum,#a12f6e);font-family:Inter, system-ui, -apple-system, 'Segoe UI', sans-serif}
+@media (prefers-color-scheme:dark){svg.cmf-fig:root{--fig-paper:#0e0e10;--fig-panel:#17171a;--fig-ink:#ececf1;--fig-ink-2:#acacb8;--fig-ink-3:#8a8a96;--fig-rule:#2a2a30;--fig-blue:#6ea6ff;--fig-blue-soft:#15233a;--fig-orange:#f08a4b;--fig-green:#3ec79a;--fig-plum:#e07ab2}}
+svg.cmf-fig text{fill:var(--f-ink);font-size:12px}
+svg.cmf-fig .bg{fill:var(--fig-bg,var(--f-paper))}
+svg.cmf-fig .k{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px;font-weight:500;letter-spacing:.08em;fill:var(--f-blue)}
+svg.cmf-fig .h{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:21px;font-weight:400;letter-spacing:-.01em}
+svg.cmf-fig .sub{font-size:12.5px;fill:var(--f-ink2)}
+svg.cmf-fig .cap{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10px;letter-spacing:.1em;fill:var(--f-ink2)}
+svg.cmf-fig .se{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-size:15px}
+svg.cmf-fig .it{font-family:Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;font-style:italic}
+svg.cmf-fig .m{font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;font-size:10.5px}
+svg.cmf-fig .sm{font-size:11px}
+svg.cmf-fig .b6{font-weight:600}
+svg.cmf-fig .c2{fill:var(--f-ink2)}
+svg.cmf-fig .c3{fill:var(--f-ink3)}
+svg.cmf-fig .cb{fill:var(--f-blue)}
+svg.cmf-fig .co{fill:var(--f-orange)}
+svg.cmf-fig .mid{text-anchor:middle}
+svg.cmf-fig .end{text-anchor:end}
+svg.cmf-fig .ln{fill:none;stroke:var(--f-ink);stroke-width:1}
+svg.cmf-fig .ln2{fill:none;stroke:var(--f-ink2);stroke-width:1}
+svg.cmf-fig .ln3{fill:none;stroke:var(--f-ink3);stroke-width:1}
+svg.cmf-fig .rl{fill:none;stroke:var(--f-rule);stroke-width:1}
+svg.cmf-fig .lb{fill:none;stroke:var(--f-blue);stroke-width:1.5}
+svg.cmf-fig .lo{fill:none;stroke:var(--f-orange);stroke-width:1.5}
+svg.cmf-fig .dash{stroke-dasharray:3 4}
+svg.cmf-fig .fp{fill:var(--f-paper)}
+svg.cmf-fig .fpn{fill:var(--f-panel)}
+svg.cmf-fig .fi{fill:var(--f-ink)}
+svg.cmf-fig .fi2{fill:var(--f-ink2)}
+svg.cmf-fig .fi3{fill:var(--f-ink3)}
+svg.cmf-fig .fb{fill:var(--f-blue)}
+svg.cmf-fig .fbs{fill:var(--f-bsoft)}
+svg.cmf-fig .fo{fill:var(--f-orange)}
+svg.cmf-fig .c-0{fill:var(--f-blue)}
+svg.cmf-fig .c-1{fill:var(--f-orange)}
+svg.cmf-fig .c-2{fill:var(--f-green)}
+svg.cmf-fig .c-3{fill:var(--f-plum)}
+svg.cmf-fig .s-0{fill:none;stroke:var(--f-blue)}
+svg.cmf-fig .s-1{fill:none;stroke:var(--f-orange)}
+svg.cmf-fig .s-2{fill:none;stroke:var(--f-green)}
+svg.cmf-fig .s-3{fill:none;stroke:var(--f-plum)}
+</style>
+<rect x="-20" y="-20" width="840" height="728" class="bg"/>
+<text x="0" y="12" class="k">FIG. 06</text>
+<text x="0" y="38" class="h">Statistics on the GPU, saved in the background</text>
+<text x="0" y="58" class="sub">Only finished windows leave the device; writers compress and write while the model runs on</text>
+<defs><pattern id="st-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="ln3"/></pattern></defs>
+<rect x="0" y="84" width="800" height="208" rx="12" class="ln"/>
+<text x="18" y="108" class="m cb b6">GPU</text>
+<text x="56" y="108" class="m c3">every sub-step, inside the captured step</text>
+<rect x="18" y="128" width="176" height="144" rx="6" class="rl fpn"/>
+<text x="32" y="152" class="se">Model state</text>
+<rect x="214" y="128" width="176" height="144" rx="6" class="rl fpn"/>
+<text x="228" y="152" class="se">Select</text>
+<rect x="410" y="128" width="176" height="144" rx="6" class="rl fpn"/>
+<text x="424" y="152" class="se">Accumulate</text>
+<rect x="606" y="128" width="176" height="144" rx="6" class="rl fpn"/>
+<text x="620" y="152" class="se">Windows close</text>
+<path d="M197,198 L205.00,198.00" class="ln"/><path d="M211,198 L205.00,195.48 L205.00,200.52 Z" class="fi"/>
+<path d="M393,198 L401.00,198.00" class="ln"/><path d="M407,198 L401.00,195.48 L401.00,200.52 Z" class="fi"/>
+<path d="M589,198 L597.00,198.00" class="ln"/><path d="M603,198 L597.00,195.48 L597.00,200.52 Z" class="fi"/>
+<text x="32" y="170" class="sm c2">all catchments</text>
+<circle cx="38" cy="188" r="1.8" class="fi2"/>
+<circle cx="38" cy="199" r="1.8" class="fi2"/>
+<circle cx="38" cy="210" r="1.8" class="fi2"/>
+<circle cx="38" cy="221" r="1.8" class="fi2"/>
+<circle cx="38" cy="232" r="1.8" class="fi2"/>
+<circle cx="38" cy="243" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="50.5" cy="243" r="1.8" class="fi2"/>
+<circle cx="63" cy="188" r="1.8" class="fi2"/>
+<circle cx="63" cy="199" r="1.8" class="fi2"/>
+<circle cx="63" cy="210" r="1.8" class="fi2"/>
+<circle cx="63" cy="221" r="1.8" class="fi2"/>
+<circle cx="63" cy="232" r="1.8" class="fi2"/>
+<circle cx="63" cy="243" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="75.5" cy="243" r="1.8" class="fi2"/>
+<circle cx="88" cy="188" r="1.8" class="fi2"/>
+<circle cx="88" cy="199" r="1.8" class="fi2"/>
+<circle cx="88" cy="210" r="1.8" class="fi2"/>
+<circle cx="88" cy="221" r="1.8" class="fi2"/>
+<circle cx="88" cy="232" r="1.8" class="fi2"/>
+<circle cx="88" cy="243" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="100.5" cy="243" r="1.8" class="fi2"/>
+<circle cx="113" cy="188" r="1.8" class="fi2"/>
+<circle cx="113" cy="199" r="1.8" class="fi2"/>
+<circle cx="113" cy="210" r="1.8" class="fi2"/>
+<circle cx="113" cy="221" r="1.8" class="fi2"/>
+<circle cx="113" cy="232" r="1.8" class="fi2"/>
+<circle cx="113" cy="243" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="125.5" cy="243" r="1.8" class="fi2"/>
+<circle cx="138" cy="188" r="1.8" class="fi2"/>
+<circle cx="138" cy="199" r="1.8" class="fi2"/>
+<circle cx="138" cy="210" r="1.8" class="fi2"/>
+<circle cx="138" cy="221" r="1.8" class="fi2"/>
+<circle cx="138" cy="232" r="1.8" class="fi2"/>
+<circle cx="138" cy="243" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="150.5" cy="243" r="1.8" class="fi2"/>
+<circle cx="163" cy="188" r="1.8" class="fi2"/>
+<circle cx="163" cy="199" r="1.8" class="fi2"/>
+<circle cx="163" cy="210" r="1.8" class="fi2"/>
+<circle cx="163" cy="221" r="1.8" class="fi2"/>
+<circle cx="163" cy="232" r="1.8" class="fi2"/>
+<circle cx="163" cy="243" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="188" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="199" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="210" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="221" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="232" r="1.8" class="fi2"/>
+<circle cx="175.5" cy="243" r="1.8" class="fi2"/>
+<text x="32" y="260" class="m c3" font-size="9.5">C = 252,383 (glb_15min)</text>
+<text x="228" y="172" class="m">variables_to_save</text>
+<text x="228" y="186" class="sm c2">+ expressions</text>
+<circle cx="234" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="234" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="234" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="234" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="246.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="246.5" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="246.5" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="246.5" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="259" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="259" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="259" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="259" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="271.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="271.5" cy="210" r="1.8" class="fb"/>
+<circle cx="271.5" cy="220" r="1.8" class="fb"/>
+<circle cx="271.5" cy="230" r="1.8" class="fb"/>
+<circle cx="284" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="284" cy="210" r="1.8" class="fb"/>
+<circle cx="284" cy="220" r="1.8" class="fb"/>
+<circle cx="284" cy="230" r="1.8" class="fb"/>
+<circle cx="296.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="296.5" cy="210" r="1.8" class="fb"/>
+<circle cx="296.5" cy="220" r="1.8" class="fb"/>
+<circle cx="296.5" cy="230" r="1.8" class="fb"/>
+<circle cx="309" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="309" cy="210" r="1.8" class="fb"/>
+<circle cx="309" cy="220" r="1.8" class="fb"/>
+<circle cx="309" cy="230" r="1.8" class="fb"/>
+<circle cx="321.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="321.5" cy="210" r="1.8" class="fb"/>
+<circle cx="321.5" cy="220" r="1.8" class="fb"/>
+<circle cx="321.5" cy="230" r="1.8" class="fb"/>
+<circle cx="334" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="334" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="334" cy="220" r="1.8" class="fb"/>
+<circle cx="334" cy="230" r="1.8" class="fb"/>
+<circle cx="346.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="346.5" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="346.5" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="346.5" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="359" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="359" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="359" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="359" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="371.5" cy="200" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="371.5" cy="210" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="371.5" cy="220" r="1.8" class="fi3" fill-opacity=".6"/>
+<circle cx="371.5" cy="230" r="1.8" class="fi3" fill-opacity=".6"/>
+<rect x="265.25" y="205" width="75" height="30" rx="3" class="lb dash" stroke-width="1"/>
+<text x="228" y="245" class="m">output_catchment_id</text>
+<text x="228" y="260" class="sm c2">saved points, e.g. a region</text>
+<text x="424" y="172" class="m">mean · sum · max</text>
+<text x="424" y="186" class="m">min · first · last</text>
+<rect x="424" y="218" width="18" height="22" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="424" y1="218" x2="442" y2="218" class="lb"/>
+<circle cx="433" cy="212" r="1.8" class="fo"/>
+<rect x="448" y="210" width="18" height="30" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="448" y1="210" x2="466" y2="210" class="lb"/>
+<circle cx="457" cy="204" r="1.8" class="fo"/>
+<rect x="472" y="224" width="18" height="16" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="472" y1="224" x2="490" y2="224" class="lb"/>
+<circle cx="481" cy="218" r="1.8" class="fo"/>
+<rect x="496" y="214" width="18" height="26" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="496" y1="214" x2="514" y2="214" class="lb"/>
+<circle cx="505" cy="208" r="1.8" class="fo"/>
+<rect x="520" y="206" width="18" height="34" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="520" y1="206" x2="538" y2="206" class="lb"/>
+<circle cx="529" cy="200" r="1.8" class="fo"/>
+<rect x="544" y="220" width="18" height="20" rx="1" class="fb" fill-opacity=".22"/>
+<line x1="544" y1="220" x2="562" y2="220" class="lb"/>
+<circle cx="553" cy="214" r="1.8" class="fo"/>
+<text x="424" y="260" class="sm c2">sized to saved points only</text>
+<text x="620" y="172" class="m"><tspan class="c3">inner  </tspan>day → mean</text>
+<text x="620" y="186" class="m"><tspan class="c3">outer  </tspan>month → max_mean</text>
+<line x1="620" y1="229.2" x2="631" y2="229.2" class="ln2" stroke-width="2"/>
+<line x1="634" y1="227.04" x2="645" y2="227.04" class="ln2" stroke-width="2"/>
+<line x1="648" y1="228.12" x2="659" y2="228.12" class="ln2" stroke-width="2"/>
+<line x1="662" y1="223.8" x2="673" y2="223.8" class="ln2" stroke-width="2"/>
+<line x1="676" y1="217.68" x2="687" y2="217.68" class="ln2" stroke-width="2"/>
+<line x1="690" y1="205.8" x2="701" y2="205.8" class="lo" stroke-width="2"/>
+<line x1="704" y1="211.2" x2="715" y2="211.2" class="ln2" stroke-width="2"/>
+<line x1="718" y1="220.2" x2="729" y2="220.2" class="ln2" stroke-width="2"/>
+<line x1="732" y1="223.44" x2="743" y2="223.44" class="ln2" stroke-width="2"/>
+<line x1="746" y1="225.6" x2="757" y2="225.6" class="ln2" stroke-width="2"/>
+<circle cx="695.5" cy="198.8" r="2.6" class="fo"/>
+<line x1="620" y1="246" x2="757" y2="246" class="rl"/>
+<text x="620" y="260" class="sm c2">finished results only</text>
+<path d="M694,274 L694.00,330.00" class="lo"/><path d="M694,336 L696.52,330.00 L691.48,330.00 Z" class="fo"/>
+<text x="684" y="318" class="m co end">async copy of finished windows only</text>
+<text x="0" y="364" class="cap">ASYNCHRONOUS SAVING</text>
+<line x1="143" y1="360.5" x2="800" y2="360.5" class="rl"/>
+<text x="0" y="403" class="m cb b6">GPU</text>
+<text x="0" y="453" class="m">writer 1</text>
+<text x="0" y="493" class="m">writer 2</text>
+<text x="0" y="520" class="sm c3">CPU processes</text>
+<line x1="92" y1="399" x2="800" y2="399" class="rl"/>
+<line x1="92" y1="449" x2="800" y2="449" class="rl"/>
+<line x1="92" y1="489" x2="800" y2="489" class="rl"/>
+<rect x="92" y="386" width="64" height="26" class="ln3" style="fill:url(#st-hatch)"/>
+<rect x="100" y="393" width="48" height="12" class="fp"/>
+<text x="124" y="402.5" class="m c3 mid" font-size="9">spin-up</text>
+<text x="92" y="425" class="m c3" font-size="9">accumulators off</text>
+<rect x="162" y="386" width="96" height="26" rx="3" class="fbs"/>
+<rect x="162" y="386" width="96" height="26" rx="3" class="lb" stroke-width="1"/>
+<text x="172" y="403" class="m cb" font-size="9.5">day 1</text>
+<rect x="262" y="386" width="96" height="26" rx="3" class="fbs"/>
+<rect x="262" y="386" width="96" height="26" rx="3" class="lb" stroke-width="1"/>
+<text x="272" y="403" class="m cb" font-size="9.5">day 2</text>
+<rect x="362" y="386" width="96" height="26" rx="3" class="fbs"/>
+<rect x="362" y="386" width="96" height="26" rx="3" class="lb" stroke-width="1"/>
+<text x="372" y="403" class="m cb" font-size="9.5">day 3</text>
+<rect x="462" y="386" width="96" height="26" rx="3" class="fbs"/>
+<rect x="462" y="386" width="96" height="26" rx="3" class="lb" stroke-width="1"/>
+<text x="472" y="403" class="m cb" font-size="9.5">day 4</text>
+<rect x="562" y="386" width="96" height="26" rx="3" class="fbs"/>
+<rect x="562" y="386" width="96" height="26" rx="3" class="lb" stroke-width="1"/>
+<text x="572" y="403" class="m cb" font-size="9.5">day 5</text>
+<line x1="258" y1="399" x2="258" y2="436" class="lo" stroke-width="1"/>
+<line x1="358" y1="399" x2="358" y2="476" class="lo" stroke-width="1"/>
+<line x1="458" y1="399" x2="458" y2="436" class="lo" stroke-width="1"/>
+<line x1="558" y1="399" x2="558" y2="476" class="lo" stroke-width="1"/>
+<line x1="658" y1="399" x2="658" y2="436" class="lo" stroke-width="1"/>
+<rect x="258" y="436" width="140" height="26" rx="3" class="fp"/>
+<rect x="258" y="436" width="140" height="26" rx="3" class="fo" fill-opacity=".14"/>
+<rect x="258" y="436" width="140" height="26" rx="3" class="lo" stroke-width="1"/>
+<text x="268" y="453" class="m co" font-size="9.5">compress + write</text>
+<rect x="358" y="476" width="140" height="26" rx="3" class="fp"/>
+<rect x="358" y="476" width="140" height="26" rx="3" class="fo" fill-opacity=".14"/>
+<rect x="358" y="476" width="140" height="26" rx="3" class="lo" stroke-width="1"/>
+<text x="368" y="493" class="m co" font-size="9.5">compress + write</text>
+<rect x="458" y="436" width="140" height="26" rx="3" class="fp"/>
+<rect x="458" y="436" width="140" height="26" rx="3" class="fo" fill-opacity=".14"/>
+<rect x="458" y="436" width="140" height="26" rx="3" class="lo" stroke-width="1"/>
+<text x="468" y="453" class="m co" font-size="9.5">compress + write</text>
+<rect x="558" y="476" width="140" height="26" rx="3" class="fp"/>
+<rect x="558" y="476" width="140" height="26" rx="3" class="fo" fill-opacity=".14"/>
+<rect x="558" y="476" width="140" height="26" rx="3" class="lo" stroke-width="1"/>
+<text x="568" y="493" class="m co" font-size="9.5">compress + write</text>
+<rect x="658" y="436" width="140" height="26" rx="3" class="fp"/>
+<rect x="658" y="436" width="140" height="26" rx="3" class="fo" fill-opacity=".14"/>
+<rect x="658" y="436" width="140" height="26" rx="3" class="lo" stroke-width="1"/>
+<text x="668" y="453" class="m co" font-size="9.5">compress + write</text>
+<circle cx="258" cy="399" r="3" class="fo"/>
+<circle cx="358" cy="399" r="3" class="fo"/>
+<circle cx="458" cy="399" r="3" class="fo"/>
+<circle cx="558" cy="399" r="3" class="fo"/>
+<circle cx="658" cy="399" r="3" class="fo"/>
+<path d="M92,524 L794.00,524.00" class="ln3"/><path d="M800,524 L794.00,521.48 L794.00,526.52 Z" class="fi3"/>
+<text x="790" y="540" class="m c3 end" font-size="9.5">time</text>
+<text x="92" y="540" class="sm c2">the GPU keeps simulating while each finished day is written</text>
+<line x1="0" y1="554" x2="800" y2="554" class="rl"/>
+<path d="M0,568 H19 L26,575 V600 H0 Z" class="ln fp"/><path d="M19,568 V575 H26" class="ln"/>
+<text x="36" y="582" class="m">total_outflow_mean_rank0.nc</text>
+<text x="36" y="596" class="m">total_outflow_max_mean_rank0.nc</text>
+<text x="300" y="582" class="sm c2">one NetCDF file per variable, operation and rank;</text>
+<text x="300" y="596" class="sm c2">model.close() waits for pending writes</text>
+<text x="0" y="638" class="cap">DATA PER DAY, ONE VARIABLE</text>
+<rect x="240" y="650" width="560" height="10" rx="1" class="fi2" fill-opacity=".35"/>
+<text x="0" y="659" class="m c2">every sub-step: 252,383 × 360</text>
+<rect x="240" y="672" width="1.6" height="10" class="fo"/>
+<text x="0" y="681" class="m c2">saved daily mean: 252,383 × 1</text>
+<text x="250" y="681" class="sm co">360 times less, computed on the fly</text>
+</svg>
